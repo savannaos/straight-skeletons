@@ -1,0 +1,15 @@
+References
+
+Original shrinking algorithm: 
+O.Aichholzer,F.Aurenhammer,D.Alberts,and B.Gartner.A novel type of skeleton for polygons. Journal of Universal Computer Science, http://www.iicm.edu/jucs112, Institute for Image Processing and Computer Supported New Media, 1(12):752{761, 1995.
+
+Ideas for implementation:
+http://www.dma.fi.upm.es/personal/mabellanas/tfcs/skeleton/html/documentacion/Straight%20Skeletons%20Implementation.pdf
+
+using a PSLG:
+http://www.cs.umanitoba.ca/~cccg2010/electronicProceedings/paper15.pdf
+
+Examples and application (skip to 13 mins):
+https://www.youtube.com/watch?v=K0GuKDSX1FA
+
+
