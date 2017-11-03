@@ -9,8 +9,8 @@ Given a polygon, we implement a shrinking algorithm that constructs the straight
 
 ## Shrinking Algorithm definitions 
 
-###Reflex vertex: In a polygon, if the angle formed by two edges at a vertex with the polygon inside the angle is greater than
+### Reflex vertex: In a polygon, if the angle formed by two edges at a vertex with the polygon inside the angle is greater than
 180 degrees, it is called "reflex" (or concave).
-###Edge event: An edge shrinks to zero, making its neighboring edges adjacent
-###Split event: A reflex vertex runs to this edge and splits it, thus splitting the entire polygon. 
+### Edge event: An edge shrinks to zero, making its neighboring edges adjacent
+### Split event: A reflex vertex runs to this edge and splits it, thus splitting the entire polygon. 
 New adjacencies occur between the split edge and each of the two edges incident to the reflex vertex.
