@@ -9,10 +9,25 @@ Given a polygon, we implement a shrinking algorithm that constructs the straight
 
 ## Shrinking Algorithm definitions 
 
-Reflex vertex: In a polygon, if the angle formed by two edges at a vertex with the polygon inside the angle is greater than
-180 degrees, it is called "reflex" (or concave).
-
 Edge event: An edge shrinks to zero, making its neighboring edges adjacent
 
 Split event: A reflex vertex runs to this edge and splits it, thus splitting the entire polygon. 
 New adjacencies occur between the split edge and each of the two edges incident to the reflex vertex.
+
+## Basic Shrinking Algorithm outline
+
+1. Initialize polygon as list of lines (|V|,|E|)
+2. Define lambda, where lambda is the constant distance that each edge will shrink in every iteration
+3. direction = list of tuples of length |V|
+4. for each line: extract points and determine which direction to shrink
+5. while(not done): 
+	if(split event): break up into two polygons
+		newpts = shrink(pts, direction) for each existing polygon
+6. create new lines from pts to newpts for each existing polygon
+7. Repeat 3-6 until all edges have edge event
+
+
+
+
+
+
