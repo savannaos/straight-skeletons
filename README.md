@@ -30,23 +30,23 @@ New adjacencies occur between the split edge and each of the two edges incident 
 
 The program will be a webpage where users will be able to draw a polygon on the screen with their mouse. This will be done by clicking the screen at the location where an edge of the polygon should start, moving the cursor to the location where it should end, and clicking again, which will generate the edge visually on the screen between those two points.
 
-![alt text](https://i.imgur.com/eqYSApv.png)
+![alt text](https://i.imgur.com/cWAnt6t.png)
 
 Once this is done, the point at the end of the first edge will be set as the start of the second edge, and the next place the user clicks will generate the second edge between those two points on the screen.
 
-![alt text](https://i.imgur.com/RUTA67J.png)
+![alt text](https://i.imgur.com/4gSyMJ3.png)
 
 This process is repeated until the user generates a line which creates a full polygon.
 
-![alt text](https://i.imgur.com/yprEq3M.png)
+![alt text](https://i.imgur.com/rXMgqwM.png)
 
-![alt text](https://i.imgur.com/yQGL6UM.png)
+![alt text](https://i.imgur.com/smQPAgx.png)
 
 Once the polygon is created, the program will then display the process of the construction of the straight skeleton. This will show the lines being created as the edges the edges of the polygon move inward.
 
-![alt text](https://i.imgur.com/hGqzdEX.png)
+![alt text](https://i.imgur.com/iDF0qJM.png)
 
-![alt text](https://i.imgur.com/WneLYSq.png)
+![alt text](https://i.imgur.com/OADb6CE.png)
 
 
 
