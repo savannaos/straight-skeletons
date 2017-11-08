@@ -42,7 +42,7 @@ This process is repeated until the user generates a line which creates a full po
 
 ![alt text](https://i.imgur.com/smQPAgx.png)
 
-Once the polygon is created, the program will then display the process of the construction of the straight skeleton. This will show the lines being created as the edges the edges of the polygon move inward.
+Once the polygon is created, the program will then display the process of the construction of the straight skeleton. This will show the lines being created as the edges of the polygon move inward.
 
 ![alt text](https://i.imgur.com/iDF0qJM.png)
 
