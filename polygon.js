@@ -1,5 +1,4 @@
-class polygon{
-	var edges;
+class Polygon{
 	constructor(e){
 		this.edges = e;
 		beginShape();
@@ -11,4 +10,5 @@ class polygon{
 		endShape(CLOSE);
 	}
 
+}
 }
