@@ -1,10 +1,11 @@
 function setup() {
   createCanvas(600,400);
   background(171,212,242);
-    x = 0;
-    y = 0;
-    prevx = 0;
-    prevy = 0;
+  x = 0;
+  y = 0;
+  prevx = 0;
+  prevy = 0;
+
 }
 
 function draw(){
@@ -15,6 +16,7 @@ var line_array = new Array();
 var done = false;
 
 function mousePressed(){
+<<<<<<< HEAD
     x = mouseX;               //get clicked spot
 	y = mouseY;
 	if(done == false){
