@@ -16,7 +16,7 @@ var line_array = new Array();
 var done = false;
 
 function mousePressed(){
-<<<<<<< HEAD
+
     x = mouseX;               //get clicked spot
 	y = mouseY;
 	if(done == false){
