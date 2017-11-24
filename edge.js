@@ -7,12 +7,16 @@ class Edge{
 		this.y2 = y2;
 	}
 	will_close(beginning_edge){
-		var e = this;
-		var begin = beginning_edge;
-		// add stuff here comparing the two
+		var eps = 10;
 		//if the user has clicked in the general vicinity of the starting point, then
 		//this edge's second coordinate (this.x2,this.y2) should equal the starting point.
-		//and we should return true to signal that the polygon is finished  
+		//and we should return true to signal that the polygon is finished
+	  if((Math.abs(beginning_edge.x1 - this.x2) < eps) &&
+				Math.abs(beginning_edge.y1 - this.y2) < eps){
+				this.x2 = beginning_edge.x1;
+				this.y2 = beginning_edge.y1;
+				return true;
+		}
 		return false;
 	}
 
