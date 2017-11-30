@@ -1,6 +1,6 @@
 class Polygon{
 	constructor(e){
-		this.edges = e;
+		this.edges = e; //list of edges
 }
 	direction(e1,e2){
 		//input: two adjacent edges of a polygon
@@ -18,7 +18,7 @@ class Polygon{
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
 		//Index each edge list of a polygon the same so at the end we can draw
 		//where each vertex travelled to.
-		var lambda = 10; 
+		var lambda = 10;
 	}
 
 }
