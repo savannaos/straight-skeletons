@@ -53,13 +53,15 @@ class Polygon{
 		var dy = y1 - y2;
 		var sy = Math.sign(dy);
 		if (dx == 0)
-			a = a + sy*Math.PI/2;
+			a = a + sy*(Math.PI/2);
 		else if (dx > 0)
 			a = a + sy*Math.atan(Math.abs(dy)/Math.abs(dx));
 		else
 			a = a + Math.PI - sy*Math.atan(Math.abs(dy)/Math.abs(dx));
-		}
-		return [Math.cos(a), Math.sin(a)];
+		var cos_a = Math.cos(a);
+		var sin_a = Math.sin(a);
+		var d = [cos_a, sin_a];
+		return d;
 	}
   shrink(lambda){
 		//input: a lambda value to shrink in by
@@ -67,12 +69,12 @@ class Polygon{
 		//Idea: for all vertices, [x,y] = direction()
 		//new vertex =  old * lambda * [x,y].
 		var new_edges = new Array();
-		for(){
-			var directions = direction(e1,e2);
+		//for(){
+		//	var directions = direction(e1,e2);
 
-		}
-		var p = new Polygon(new_edges);
-		return p;
+//		}
+	//	var p = new Polygon(new_edges);
+		//return p;
 	}
 	straight_skeleton(){
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
