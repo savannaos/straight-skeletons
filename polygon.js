@@ -23,7 +23,7 @@ class Polygon{
 		var y12 = y2 - y1;
 		var x23 = x3 - x2;
 		var y23 = y3 - y2;
-		var d12 = Math.pow(x12, 2) + Math.pow(y12 2);
+		var d12 = Math.pow(x12, 2) + Math.pow(y12, 2);
 		var d23 = Math.pow(x23, 2) + Math.pow(y23, 2);
 		var d13 = Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2);
 		var a = Math.acos((d12 + d23 - d13)/(2 * Math.sqrt(d12) * Math.sqrt(d23)));	// angle between 0 and pi radians
@@ -66,7 +66,13 @@ class Polygon{
 		//output: new set of edges after performing the shrink.
 		//Idea: for all vertices, [x,y] = direction()
 		//new vertex =  old * lambda * [x,y].
-		
+		var new_edges = new Array();
+		for(){
+			var directions = direction(e1,e2);
+
+		}
+		var p = new Polygon(new_edges);
+		return p;
 	}
 	straight_skeleton(){
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
