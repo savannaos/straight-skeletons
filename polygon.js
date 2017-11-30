@@ -92,7 +92,7 @@ class Polygon{
 			y_prev = y_curr;
 		}
 	  var p = new Polygon(new_edges);
-		return p;
+		return p; //will need to be an array for when we need to return multiple polygons
 	}
 
 	straight_skeleton(){

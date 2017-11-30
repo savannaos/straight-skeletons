@@ -30,36 +30,17 @@ function mousePressed(){
 					 if(e.will_close(line_array[0])){    //if this line will close the polygon
 						  done = true;
 						  var p = new Polygon(line_array);
+              p.straight_skeleton();
 				     }
 					 ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
 				     line(e.x1,e.y1, e.x2, e.y2);        	//connect points
 				 }
 		}
-
-	    else{ ellipse(x, y, 5, 5);
-		}
-	prevx = x;
-	prevy = y;
-
-  x = mouseX;                                   //get clicked spot
-	y = mouseY;
-	if(done == false){                            //polygon is not yet finished
-		    if(prevy != 0) {                        //previous clicked spot exists
-		        var e = new Edge(prevx,prevy,x,y);  //create edge from those points
-		        line_array.push(e);	                //add that line to the array
-		        if(e.will_close(line_array[0])){    //if this line will close the polygon
-		        	done = true;
-              var p = new Polygon(line_array);
-		        }
-
-            ellipse(e.x2, e.y2, 5, 5);          //draw point at that spot
-            line(e.x1,e.y1, e.x2, e.y2);        //connect points
-		    }
-        else {                                  //first click so just draw point
-          ellipse(x, y, 5, 5);
-        }
-	    prevx = x;
-	    prevy = y;
+	    else {
+        ellipse(x, y, 5, 5);
+		   }
+	  prevx = x;
+	  prevy = y;
 	}
 	return false;
 }
@@ -81,7 +62,9 @@ function is_simple(line_array){
 					simple = false;
 					break
 				}
-
+      }
+    }
+  }
 	for(edge in line_array){
 		//test for intersection between the all the lines
 		test1 = ccw(line.x1, line.y1, line.x2, line.y2, last.x1, last.y2);
@@ -101,7 +84,7 @@ function is_simple(line_array){
 }
 
 
-// ccw test takes three points a, b, c as input
+//ccw test takes three points a, b, c as input
 function ccw(ax, ay, bx, by, cx, cy){
 	test = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
 	if(test > 0)
