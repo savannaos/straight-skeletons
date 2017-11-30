@@ -51,7 +51,6 @@ class Polygon{
 		var y2 = e1.y2;
 		var dx = x1 - x2;
 		var dy = y1 - y2;
-		var sx = Math.sign(dx);
 		var sy = Math.sign(dy);
 		if (dx == 0)
 			a = a + sy*Math.PI/2;
