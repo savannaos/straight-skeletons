@@ -9,6 +9,7 @@ function setup() {
 
 }
 
+
 function clear(){
 
 }
@@ -27,6 +28,7 @@ function mousePressed(){
 		        	done = true;
               var p = new Polygon(line_array);
 		        }
+		        
             ellipse(e.x2, e.y2, 5, 5);          //draw point at that spot
             line(e.x1,e.y1, e.x2, e.y2);        //connect points
 		    }
@@ -38,3 +40,20 @@ function mousePressed(){
 	}
   return false;
 }
+
+function is_simple(){
+	
+}
+// ccw test takes three points a, b, c as input
+function ccw(ax, ay, bx, by, cx, cy){
+	test = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
+	if(test > 0)
+		return 1; //counter clock-wise
+	else if(test == 0)
+		return 0; //co-linear
+	else return -1; //clockwise
+}
+
+
+
+
