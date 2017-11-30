@@ -60,9 +60,9 @@ function is_simple(line_array){
 		}
 		}
 		return simple;
-	}
-	
 }
+	
+
 // ccw test takes three points a, b, c as input
 function ccw(ax, ay, bx, by, cx, cy){
 	test = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
