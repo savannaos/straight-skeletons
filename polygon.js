@@ -58,13 +58,13 @@ class Polygon{
 		else if (dy == 0)
 			a = a + (sx - 1)*Math.PI;
 		else {
-			var b = atan(Math.abs(dy)/Math.abs(dx));
+			var b = Math.atan(Math.abs(dy)/Math.abs(dx));
 			if (dx > 0)
 				a = a + sy*b;
 			else
 				a = a + Math.PI - sy*b;
 		}
-		return [cos(a), sin(a)];
+		return [Math.cos(a), Math.sin(a)];
 	}
   shrink(lambda){
 		//input: a lambda value to shrink in by
