@@ -51,18 +51,14 @@ class Polygon{
 		var y2 = e1.y2;
 		var dx = x1 - x2;
 		var dy = y1 - y2;
-		var sx = dx/Math.abs(dx);
-		var sy = dy/Math.abs(dy);
+		var sx = Math.sign(dx);
+		var sy = Math.sign(dy);
 		if (dx == 0)
 			a = a + sy*Math.PI/2;
-		else if (dy == 0)
-			a = a + (sx - 1)*Math.PI;
-		else {
-			var b = Math.atan(Math.abs(dy)/Math.abs(dx));
-			if (dx > 0)
-				a = a + sy*b;
-			else
-				a = a + Math.PI - sy*b;
+		else if (dx > 0)
+			a = a + sy*Math.atan(Math.abs(dy)/Math.abs(dx));
+		else
+			a = a + Math.PI - sy*Math.atan(Math.abs(dy)/Math.abs(dx));
 		}
 		return [Math.cos(a), Math.sin(a)];
 	}
