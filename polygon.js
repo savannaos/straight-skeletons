@@ -2,11 +2,69 @@ class Polygon{
 	constructor(e){
 		this.edges = e;
 }
+	clockwise() {	// determines if edges are stored in clockwise order
+		var a = 0;
+		for (i = 0; i < this.edges.length; i++) {
+			var e = this.edges[i];
+			a += e.x1*e.y2 - e.x2*e.y1;
+			//this.area = Math.abs(0.5*a); included this as a comment in case area is ever needed
+		}
+		this.cw = a < 0;	// this.cw is true if the edges are stored in clockwise order
+	}
+
+	angle(e1, e2) {	// determines interior angle at shared vertex of two edges
+		var x1 = e1.x1;
+		var y1 = e1.y1;
+		var x2 = e1.x2;
+		var y2 = e1.y2;
+		var x3 = e2.x2;
+		var y3 = e2.y2;
+		var x12 = x2 - x1;
+		var y12 = y2 - y1;
+		var x23 = x3 - x2;
+		var y23 = y3 - y2;
+		var d12 = Math.pow(x12, 2) + Math.pow(y12 2);
+		var d23 = Math.pow(x23, 2) + Math.pow(y23, 2);
+		var d13 = Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2);
+		var a = Math.acos((d12 + d23 - d13)/(2 * Math.sqrt(d12) * Math.sqrt(d23)));	// angle between 0 and pi radians
+		var c = x12*y23 - x23*y12;	// cross product of two edges: e1 x e2
+		// cross product will be negative if interior angle is greater than pi when
+		// the edges are ordered clockwise; positive when ordered counterclockwise
+		if ((c > 0 && this.cw) || (c < 0 && !this.cw))
+			a = 2*Math.PI - a;	// ensuring angle is that of the interior angle
+		return a;
+	}
+
 	direction(e1,e2){
 		//input: two adjacent edges of a polygon
 		//output: [x,y], the shrinking direction for the vertex connecting the two edges
 		//Idea: compute angle between the two lines and pick a vector that
 		//splits the the angle evenly (bisector).
+		var a = angle(e1, e2)/2;
+		var x1 = e1.x1;
+		var y1 = e1.y1;
+		if (!this.cw) {	// determine new angle from second edge if edges are ordered counterclockwise
+			x1 = e2.x2;
+			y1 = e2.y2;
+		}
+		var x2 = e1.x2;
+		var y2 = e1.y2;
+		var dx = x1 - x2;
+		var dy = y1 - y2;
+		var sx = dx/Math.abs(dx);
+		var sy = dy/Math.abs(dy);
+		if (dx == 0)
+			a = a + sy*Math.PI/2;
+		else if (dy == 0)
+			a = a + (sx - 1)*Math.PI;
+		else {
+			var b = atan(Math.abs(dy)/Math.abs(dx));
+			if (dx > 0)
+				a = a + sy*b;
+			else
+				a = a + Math.PI - sy*b;
+		}
+		return [cos(a), sin(a)];
 	}
   shrink(lambda){
 		//input: a lambda value to shrink in by
