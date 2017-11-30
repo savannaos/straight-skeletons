@@ -19,7 +19,7 @@ var done = false;
 var simple;
 
 function mousePressed(){
-<<<<<<< Updated upstream
+
   x = mouseX;                                   		//get clicked spot
   y = mouseY;
 	if(done == false){                          	    //polygon is not yet finished
@@ -35,12 +35,12 @@ function mousePressed(){
 				     line(e.x1,e.y1, e.x2, e.y2);        	//connect points
 				 }
 		}
-		
+
 	    else{ ellipse(x, y, 5, 5);
 		}
 	prevx = x;
 	prevy = y;
-=======
+
   x = mouseX;                                   //get clicked spot
 	y = mouseY;
 	if(done == false){                            //polygon is not yet finished
@@ -60,7 +60,6 @@ function mousePressed(){
         }
 	    prevx = x;
 	    prevy = y;
->>>>>>> Stashed changes
 	}
 	return false;
 }
@@ -69,21 +68,20 @@ function is_simple(line_array){
 	var simple = true;
 	var line;
 	var last = line_array[line_array.length - 1]; // the last line that was drawn
-<<<<<<< Updated upstream
 	if(line_array.length >= 1){
 		for(line in line_array){
 			//test for intersection between the all the lines
 			test1 = ccw(line.x1, line.y1, line.x2, line.y2, last.x1, last.y1);
 			test2 = ccw(line.x1, line.y1, last.x1, last.y1, last.x2, last.y2);
 		    test3 = ccw(last.x1, last.y1, last.x2, last.y2, line.x1, line.y1);
-			test4 = ccw(last.x1, last.y1, last.x2, last.y2, last.x2, last.y2);	
+			test4 = ccw(last.x1, last.y1, last.x2, last.y2, last.x2, last.y2);
 			if(test1 != test2){
 				if(test3 != test4){
 					//the lines intersect
 					simple = false;
 					break
 				}
-=======
+
 	for(edge in line_array){
 		//test for intersection between the all the lines
 		test1 = ccw(line.x1, line.y1, line.x2, line.y2, last.x1, last.y2);
@@ -95,7 +93,7 @@ function is_simple(line_array){
 				//the lines intersect
 				simple = false;
 				break
->>>>>>> Stashed changes
+
 			}
 		}
 	}
