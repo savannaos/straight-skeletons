@@ -8,8 +8,6 @@ function setup() {
   prevy = 0;
 
 }
-
-
 function clear(){
 
 }
@@ -61,21 +59,6 @@ function is_simple(line_array){
 				}
       }
     }
-	for(edge in line_array){
-		//test for intersection between the all the lines
-		test1 = ccw(line.x1, line.y1, line.x2, line.y2, last.x1, last.y2);
-		test2 = ccw(line.x1, line.y1, last.x1, last.y1, last.x2, last.y2);
-	    test3 = ccw(last.x1, last.y1, last.x2, last.y2, line.x1, line.y1);
-		test4 = ccw(last.x1, last.y1, last.x2, last.y2, last.x2, last.y2);
-		if(test1 != test2){
-			if(test3 != test4){
-				//the lines intersect
-				simple = false;
-				break
-
-			}
-   	}
-	}
 		return simple;
 }
 
