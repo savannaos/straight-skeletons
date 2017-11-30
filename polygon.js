@@ -40,7 +40,7 @@ class Polygon{
 		//output: [x,y], the shrinking direction for the vertex connecting the two edges
 		//Idea: compute angle between the two lines and pick a vector that
 		//splits the angle evenly (bisector).
-		var a = angle(e1, e2)/2;
+		var a = this.angle(e1, e2)/2;
 		var x1 = e1.x1;
 		var y1 = e1.y1;
 		if (!this.cw) {	// determine new angle from second edge if edges are ordered counterclockwise
@@ -58,29 +58,62 @@ class Polygon{
 			a = a + sy*Math.atan(Math.abs(dy)/Math.abs(dx));
 		else
 			a = a + Math.PI - sy*Math.atan(Math.abs(dy)/Math.abs(dx));
-		var cos_a = Math.cos(a);
-		var sin_a = Math.sin(a);
-		var d = [cos_a, sin_a];
-		return d;
+		return [Math.cos(a), Math.sin(a)];
 	}
+
   shrink(lambda){
 		//input: a lambda value to shrink in by
 		//output: new set of edges after performing the shrink.
 		//Idea: for all vertices, [x,y] = direction()
-		//new vertex =  old * lambda * [x,y].
+		//new vertex =  old + (lambda * [x,y]).
 		var new_edges = new Array();
-		//for(){
-		//	var directions = direction(e1,e2);
-
-//		}
-	//	var p = new Polygon(new_edges);
-		//return p;
+		var i,e_curr,e_prev, x_curr, x_prev, y_curr, y_prev,x_start,y_start;
+		var last = this.edges.length-1;
+		for(i = 0; i < this.edges.length; i++){
+			e_curr = this.edges[i];
+			if(i==0) {e_prev = this.edges[last];}
+			else     {e_prev = this.edges[i-1];}
+			var d = this.direction(e_prev,e_curr);
+			x_curr = e_curr.x1 - (d[0] * lambda);
+			y_curr = e_curr.y1 - (d[1] * lambda);
+			if(i==0){
+				x_start = x_curr;
+				y_start = y_curr;
+			}
+			else {
+				var e = new Edge(x_prev, y_prev, x_curr,y_curr);
+				new_edges.push(e);
+			}
+			if(i==last){ 														//connect back to starting vertex
+				var e = new Edge(x_curr,y_curr, x_start, y_start);
+				new_edges.push(e);
+			}
+			x_prev = x_curr;
+			y_prev = y_curr;
+		}
+	  var p = new Polygon(new_edges);
+		return p;
 	}
+
 	straight_skeleton(){
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
 		//Index each edge list of a polygon the same so at the end we can draw
 		//where each vertex travelled to.
-		var lambda = 10;
+		var lambda = 20;
+		var poly = this;
+		for(var i = 0; i < 2; i ++){
+		  poly = poly.shrink(lambda);
+		  poly.draw_polygon();
+		}
+	}
+
+	draw_polygon(){
+		//For visual testing
+		var i, edge;
+		for(i = 0; i < this.edges.length; i++){
+			edge = this.edges[i];
+			line(edge.x1, edge.y1, edge.x2, edge.y2);
+		}
 	}
 
 }
