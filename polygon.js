@@ -39,7 +39,7 @@ class Polygon{
 		//input: two adjacent edges of a polygon
 		//output: [x,y], the shrinking direction for the vertex connecting the two edges
 		//Idea: compute angle between the two lines and pick a vector that
-		//splits the the angle evenly (bisector).
+		//splits the angle evenly (bisector).
 		var a = angle(e1, e2)/2;
 		var x1 = e1.x1;
 		var y1 = e1.y1;
@@ -66,6 +66,7 @@ class Polygon{
 		//output: new set of edges after performing the shrink.
 		//Idea: for all vertices, [x,y] = direction()
 		//new vertex =  old * lambda * [x,y].
+		
 	}
 	straight_skeleton(){
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
