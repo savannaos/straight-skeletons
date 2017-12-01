@@ -1,21 +1,31 @@
 function setup() {
-  var canvas = createCanvas(600,400);
+  canvas = createCanvas(600,400);
   canvas.parent('sketch-holder');
   background(171,212,242);
   x = 0;
   y = 0;
   prevx = 0;
   prevy = 0;
-
+  done = false;
+  line_array = new Array();
+  button = createButton('clear');
+  button.position(550,80);
+  button.mousePressed(clearLines);
 }
 
 
-function clear(){
-
+function clearLines(){
+  line_array = [];
+  canvas.background(171,212,242);
+  prevx = 0;
+  prevy = 0;
+  x = 0;
+  y = 0;
+  done = false;
 }
 
-var line_array = new Array();
-var done = false;
+//var line_array = new Array();
+//var done = false;
 var simple;
 
 function mousePressed(){

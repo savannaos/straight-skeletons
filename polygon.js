@@ -101,7 +101,7 @@ class Polygon{
 		//where each vertex travelled to.
 		var lambda = 20;
 		var poly = this;
-		for(var i = 0; i < 2; i ++){
+		for(var i = 0; i < 5; i ++){
 		  poly = poly.shrink(lambda);
 		  poly.draw_polygon();
 		}
@@ -110,6 +110,7 @@ class Polygon{
 	draw_polygon(){
 		//For visual testing
 		var i, edge;
+		//stroke(204, 102, 0);
 		for(i = 0; i < this.edges.length; i++){
 			edge = this.edges[i];
 			line(edge.x1, edge.y1, edge.x2, edge.y2);
