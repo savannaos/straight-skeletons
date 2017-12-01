@@ -1,15 +1,16 @@
 class Polygon{
 	constructor(e){
 		this.edges = e; //list of edges
+		this.cw = this.clockwise();	// true if the edges are stored in clockwise order
 }
 	clockwise() {	// determines if edges are stored in clockwise order
 		var a = 0;
-		for (i = 0; i < this.edges.length; i++) {
+		for (var i = 0; i < this.edges.length; i++) {
 			var e = this.edges[i];
-			a += e.x1*e.y2 - e.x2*e.y1;
+			a = a + (e.x2 - e.x1)*(e.y2 + e.y1);
 			//this.area = Math.abs(0.5*a); included this as a comment in case area is ever needed
 		}
-		this.cw = a < 0;	// this.cw is true if the edges are stored in clockwise order
+		return a < 0;
 	}
 
 	angle(e1, e2) {	// determines interior angle at shared vertex of two edges
