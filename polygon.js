@@ -66,7 +66,10 @@ class Polygon{
 			a = a + sy*Math.atan(Math.abs(dy)/Math.abs(dx));
 		else
 			a = a + Math.PI - sy*Math.atan(Math.abs(dy)/Math.abs(dx));
-		return [Math.cos(a), Math.sin(a)];
+		var x = Math.cos(a);
+		var y = Math.sin(a);
+		var d = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		return [x/d, y/d];
 	}
 
   shrink(lambda){

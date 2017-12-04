@@ -10,7 +10,7 @@ function setup() {
   line_array = new Array();
   button = createButton('clear');
   button.position(550,80);
-  button.mousePressed(clearLines);
+  button.mouseReleased(clearLines);
 }
 
 
@@ -32,6 +32,7 @@ function mousePressed(){
 
   x = mouseX;                                   		//get clicked spot
   y = mouseY;
+  if (x < 600 && y >= 0 && y < 400)
 	if(done == false){                          	    //polygon is not yet finished
 		if(prevy != 0) {                        		//previous clicked spot exists
 		     var e = new Edge(prevx,prevy,x,y); 		//create edge from those points
