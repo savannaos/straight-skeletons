@@ -2,6 +2,13 @@ class Polygon{
 	constructor(e){
 		this.edges = e; //list of edges
 		this.cw = this.clockwise();	// true if the edges are stored in clockwise order
+		var last = this.edges.length -1;
+		for(let i=0; i<this.edges.length; i++){ //sets up halfedge
+			if(i==0)    this.edges[i].set_prev(this.edges[last]);
+			else        this.edges[i].set_prev(this.edges[i-1]);
+			if(i==last) this.edges[i].set_next(this.edges[0]);
+			else 		    this.edges[i].set_next(this.edges[i+1]);
+		}
 }
 	clockwise() {	// determines if edges are stored in clockwise order
 		var a = 0;
@@ -68,15 +75,13 @@ class Polygon{
 		//Idea: for all vertices, [x,y] = direction()
 		//new vertex =  old + (lambda * [x,y]).
 		var new_edges = new Array();
-		var i,e_curr,e_prev, x_curr, x_prev, y_curr, y_prev,x_start,y_start;
-		var last = this.edges.length-1;
+		var i,e_curr,e_prev, x_curr, y_curr, x_prev, y_prev,x_start,y_start;
 		for(i = 0; i < this.edges.length; i++){
 			e_curr = this.edges[i];
-			if(i==0) {e_prev = this.edges[last];}
-			else     {e_prev = this.edges[i-1];}
-			var d = this.direction(e_prev,e_curr);
-			x_curr = e_curr.x1 - (d[0] * lambda);
-			y_curr = e_curr.y1 - (d[1] * lambda);
+			var d = this.direction(e_curr.prev,e_curr); //get bisector
+			x_curr = e_curr.x1 - (d[0] * lambda);				//get x moved along bisector
+			y_curr = e_curr.y1 - (d[1] * lambda);				//get y moved along bisector
+
 			if(i==0){
 				x_start = x_curr;
 				y_start = y_curr;
@@ -85,16 +90,22 @@ class Polygon{
 				var e = new Edge(x_prev, y_prev, x_curr,y_curr);
 				new_edges.push(e);
 			}
-			if(i==last){ 														//connect back to starting vertex
-				var e = new Edge(x_curr,y_curr, x_start, y_start);
+			if(i == this.edges.length-1){
+				var e = new Edge(x_curr,y_curr, x_start,y_start);
 				new_edges.push(e);
 			}
+
 			x_prev = x_curr;
 			y_prev = y_curr;
 		}
 	  var p = new Polygon(new_edges);
-		return p; //will need to be an array for when we need to return multiple polygons
+		return p;
 	}
+
+  area_approx_zero(){
+		//check if this polygon is about zero area
+	}
+
 
 	straight_skeleton(){
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
@@ -102,7 +113,7 @@ class Polygon{
 		//where each vertex travelled to.
 		var lambda = 20;
 		var poly = this;
-		for(var i = 0; i < 5; i ++){
+		for(var i = 0; i < 2; i ++){
 		  poly = poly.shrink(lambda);
 		  poly.draw_polygon();
 		}

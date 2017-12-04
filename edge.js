@@ -5,6 +5,14 @@ class Edge{
 		this.y1 = y1;
 		this.x2 = x2; //endpoint 2
 		this.y2 = y2;
+		this.prev;
+		this.next;
+	}
+	set_prev(e){
+		this.prev = e;
+	}
+	set_next(e){
+		this.next = e;
 	}
 	will_close(beginning_edge){
 		var eps = 10;
