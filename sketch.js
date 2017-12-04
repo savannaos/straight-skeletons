@@ -41,7 +41,7 @@ function mousePressed(){
 					 if(e.will_close(line_array[0])){    //if this line will close the polygon
 						  done = true;
 						  var p = new Polygon(line_array);
-              p.straight_skeleton();
+              run_simulation(p);
 				     }
 					 ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
 				     line(e.x1,e.y1, e.x2, e.y2);        	//connect points
@@ -84,4 +84,11 @@ function ccw(ax, ay, bx, by, cx, cy){
 	else if(test == 0)
 		return 0; //co-linear
 	else return -1; //clockwise
+}
+
+function run_simulation(polygon){
+  //calls straight_skeleton and draws out the lines returned
+  edges = polygon.straight_skeleton();
+  edge_holder = new Polygon(edges);
+  edge_holder.draw_polygon();
 }

@@ -91,10 +91,12 @@ class Polygon{
 			}
 			else {
 				var e = new Edge(x_prev, y_prev, x_curr,y_curr);
+				e.is_approx_point(); //handle if the edge is a point.
 				new_edges.push(e);
 			}
 			if(i == this.edges.length-1){
 				var e = new Edge(x_curr,y_curr, x_start,y_start);
+				e.is_approx_point();
 				new_edges.push(e);
 			}
 
@@ -109,23 +111,50 @@ class Polygon{
 		//check if this polygon is about zero area
 	}
 
+  split(){
+		//Output: an array of polygons if a split occured
+	}
 
 	straight_skeleton(){
+		//Output: an array of edges that make up the polygon's straight skeleton
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
-		//Index each edge list of a polygon the same so at the end we can draw
-		//where each vertex travelled to.
+		//At each iteration, add an edge to the skeleton connecting the vertices
+		//of the previous polygon and the new shrunken one.
 		var lambda = 20;
 		var poly = this;
-		for(var i = 0; i < 2; i ++){
-		  poly = poly.shrink(lambda);
-		  poly.draw_polygon();
+		var new_poly;
+		var skeleton = new Array();
+		for(var i = 0; i < 5; i ++){
+		  new_poly = poly.shrink(lambda);
+			//split = poly.split();
+		  new_poly.draw_polygon();
+			for(var j = 0; j< poly.edges.length; j++){ //add edges to straight skeleton
+				var e = new Edge(poly.edges[j].x1,poly.edges[j].y1,new_poly.edges[j].x1,new_poly.edges[j].y1);
+				skeleton.push(e);
+			}
+			poly = new_poly;
+			//poly = poly.remove_collapsed()
 		}
+		return skeleton;
+	}
+
+  remove_collapsed(){
+		//Output: polygon that removes the edges that collapsed into points
+		//DOES THIS PIECE EVERYTHING TOGETHER? FIXXX
+		var new_edges = new Array();
+		var edges = this.edges;
+		for(var i = 0; i < edges.length; i++){
+			if (!(edges[i].is_point())){
+				new_edges.push(edges[i]);
+			}
+		}
+		var poly = new Polygon(new_edges);
+		return poly;
 	}
 
 	draw_polygon(){
 		//For visual testing
 		var i, edge;
-		//stroke(204, 102, 0);
 		for(i = 0; i < this.edges.length; i++){
 			edge = this.edges[i];
 			line(edge.x1, edge.y1, edge.x2, edge.y2);
