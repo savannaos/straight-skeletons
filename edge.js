@@ -30,7 +30,7 @@ class Edge{
 
 	is_approx_point(){ //is the edge closely a point? if so, make it one
 		var eps = 5;
-		if((abs(this.x1-this.x2) <= eps) && abs(this.y1-this.y2 <=eps)){
+		if((abs(this.x1-this.x2) <= eps) && (abs(this.y1-this.y2) <=eps)){
 			this.set_point(true);
 			x = (this.x1 + this.x2)/2;
 			y = (this.y1 + this.y2)/2;

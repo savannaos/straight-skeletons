@@ -91,7 +91,7 @@ class Polygon{
 			}
 			else {
 				var e = new Edge(x_prev, y_prev, x_curr,y_curr);
-				e.is_approx_point(); //handle if the edge is a point.
+				e.is_approx_point();
 				new_edges.push(e);
 			}
 			if(i == this.edges.length-1){
@@ -133,7 +133,7 @@ class Polygon{
 				skeleton.push(e);
 			}
 			poly = new_poly;
-			//poly = poly.remove_collapsed()
+			poly.remove_collapsed()
 		}
 		return skeleton;
 	}
@@ -141,15 +141,15 @@ class Polygon{
   remove_collapsed(){
 		//Output: polygon that removes the edges that collapsed into points
 		//DOES THIS PIECE EVERYTHING TOGETHER? FIXXX
-		var new_edges = new Array();
+		//var new_edges = new Array();
 		var edges = this.edges;
 		for(var i = 0; i < edges.length; i++){
-			if (!(edges[i].is_point())){
-				new_edges.push(edges[i]);
+			if (edges[i].is_point()){
+				console.log("Point found")
 			}
 		}
-		var poly = new Polygon(new_edges);
-		return poly;
+		//var poly = new Polygon(new_edges);
+		//return this;
 	}
 
 	draw_polygon(){
