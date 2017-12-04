@@ -10,7 +10,7 @@ function setup() {
   line_array = new Array();
   button = createButton('clear');
   button.position(550,80);
-  button.mousePressed(clearLines);
+  button.mouseReleased(clearLines);
 }
 
 
