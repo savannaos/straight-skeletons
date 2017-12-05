@@ -41,11 +41,15 @@ function mousePressed(){
 					 if(e.will_close(line_array[0])){    //if this line will close the polygon
 						  done = true;
 						  var p = new Polygon(line_array);
-              run_simulation(p);
+						  run_simulation(p);
 				     }
 					 ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
 				     line(e.x1,e.y1, e.x2, e.y2);        	//connect points
 				 }
+				 else{
+					 line_array.pop(); 					//if the line makes the polygon not simple, take it out of the array and don't draw
+				 }
+				 
 		}
 	    else {
         ellipse(x, y, 5, 5);
@@ -58,26 +62,31 @@ function mousePressed(){
 function is_simple(line_array){
 	var simple = true;
 	var line;
-	var last = line_array[line_array.length - 1]; // the last line that was drawn
-	if(line_array.length >= 1){
-		for(line in line_array){
-			//test for intersection between the all the lines
+	var last;
+	var i = 0;
+	 // compare every line so far to see if it intersects with the last line that was drawn
+	if(line_array.length > 3){
+		last = line_array[line_array.length - 2]; //second last line drawn, last line will always intersect
+		for(i; i < line_array.length-3; i++){
+			line = line_array[i];
 			test1 = ccw(line.x1, line.y1, line.x2, line.y2, last.x1, last.y1);
 			test2 = ccw(line.x1, line.y1, last.x1, last.y1, last.x2, last.y2);
 		    test3 = ccw(last.x1, last.y1, last.x2, last.y2, line.x1, line.y1);
 			test4 = ccw(last.x1, last.y1, last.x2, last.y2, last.x2, last.y2);
-			if(test1 != test2 && test3 != test4) {
-					simple = false;
-					break
-				}
+			if(test1 != test2 && test3 != test4) 
+					simple = false;	
+				
       }
     }
+		console.log(simple);
 		return simple;
+		
 }
 
 
 //ccw test takes three points a, b, c as input
 function ccw(ax, ay, bx, by, cx, cy){
+	console.log(ax, ay, bx, by, cx, cy);
 	test = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
 	if(test > 0)
 		return 1; //counter clock-wise
