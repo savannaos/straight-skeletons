@@ -24,12 +24,7 @@ function clearLines(){
   done = false;
 }
 
-//var line_array = new Array();
-//var done = false;
-var simple;
-
 function mousePressed(){
-
   x = mouseX;                                   		//get clicked spot
   y = mouseY;
   if (x < 600 && y >= 0 && y < 400)
@@ -37,44 +32,50 @@ function mousePressed(){
 		if(prevy != 0) {                        		//previous clicked spot exists
 		     var e = new Edge(prevx,prevy,x,y); 		//create edge from those points
 		     line_array.push(e);	                	//add that line to the array
-				 if(is_simple(line_array)){
 					 if(e.will_close(line_array[0])){    //if this line will close the polygon
+						  ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
+					      line(e.x1,e.y1, e.x2, e.y2);
 						  done = true;
 						  var p = new Polygon(line_array);
 						  run_simulation(p);
-				     }
-					 ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
-				     line(e.x1,e.y1, e.x2, e.y2);        	//connect points
-				 }
-				 else{
-					 line_array.pop(); 					//if the line makes the polygon not simple, take it out of the array and don't draw
-				 }
-				 
+				     	  }
+					 else if(is_simple(line_array)){
+						  ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
+					      line(e.x1,e.y1, e.x2, e.y2); 
+					      prevx = x;
+					      prevy = y;
+					 	  }
+					 else{
+						 line_array.pop();
+						 console.log(line_array);
+					 }
 		}
-	    else {
-        ellipse(x, y, 5, 5);
-		   }
-	  prevx = x;
-	  prevy = y;
-	}
+		else{ 
+			ellipse(x, y, 5, 5);
+			prevx = x;
+		    prevy = y;
+		}
+	}		
 }
 
 function is_simple(line_array){
-	var simple = true;
+	var simple = true;							  //assume the polygon is true for 1 edge and 2 edges
 	var line;
 	var last;
 	var i = 0;
 	 // compare every line so far to see if it intersects with the last line that was drawn
-	if(line_array.length > 3){
-		last = line_array[line_array.length - 2]; //second last line drawn, last line will always intersect
-		for(i; i < line_array.length-3; i++){
+	if(line_array.length > 2){ 					  // only test if there are at least 3 lines in the array 
+		last = line_array[line_array.length - 1]; // last line that was added to the array
+		for(i; i < line_array.length-2; i++){	  // compare last line to every line before it 
 			line = line_array[i];
 			test1 = ccw(line.x1, line.y1, line.x2, line.y2, last.x1, last.y1);
 			test2 = ccw(line.x1, line.y1, last.x1, last.y1, last.x2, last.y2);
 		    test3 = ccw(last.x1, last.y1, last.x2, last.y2, line.x1, line.y1);
 			test4 = ccw(last.x1, last.y1, last.x2, last.y2, last.x2, last.y2);
 			if(test1 != test2 && test3 != test4) 
-					simple = false;	
+					simple = false;
+					return simple;
+					break;
 				
       }
     }
