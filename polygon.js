@@ -133,7 +133,7 @@ class Polygon{
 				skeleton.push(e);
 			}
 			poly = new_poly;
-			poly.remove_collapsed()
+			//poly.remove_collapsed()
 		}
 		return skeleton;
 	}
