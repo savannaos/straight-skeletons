@@ -53,6 +53,41 @@ class Edge{
 		}
 		return false;
 	}
-
-
+	
+	//returns the intersection between two edges, else returns false. 
+	edge_intersect(e1, e2){ 
+		var intersection;
+		line = e1;
+		last = e2;
+		test1 = ccw(line.x1, line.y1, line.x2, line.y2, last.x1, last.y1);
+		test2 = ccw(line.x1, line.y1, last.x1, last.y1, last.x2, last.y2);
+		test3 = ccw(last.x1, last.y1, last.x2, last.y2, line.x1, line.y1);
+		test4 = ccw(last.x1, last.y1, last.x2, last.y2, last.x2, last.y2);
+			if(test1 != test2 && test3 != test4){
+				if(e1.x2 == e2.x1 && e1.y2 == e2.x2) //if the edges are touching but not intersecting 
+					return false;
+				else{
+					// compute the intersection
+					var m1 = e1.y1 - e1.y2 / e1.x1 - e1.x2;
+					var m2 = e2.y1 - e2.y2 / e2.x1 - e2.x2;
+					var b1 = e1.y1 - m1*e1.x1; 
+					var b2 = e2.y1 - m2*e2.x1;
+					var x = (b2 - b1) / (m1 - m2);
+					var y = m1*x + b1;
+					return [x,y];
+				}
+			}
+			else 
+				return false;
+		
+	}
+	ccw(ax, ay, bx, by, cx, cy){
+		//console.log(ax, ay, bx, by, cx, cy);
+		test = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
+		if(test > 0)
+			return 1; //counter clock-wise
+		else if(test == 0)
+			return 0; //co-linear
+		else return -1; //clockwise
+	}
 }
