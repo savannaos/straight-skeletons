@@ -46,11 +46,11 @@ function mousePressed(){
 					      prevy = y;
 					 	  }
 					 else{
-						 line_array.pop();
-						 console.log(line_array);
+						 line_array.pop();				// if the poly that the user wants to draw isnt simple, then take that out the array
+						 								// don't update the prev x and prev y
 					 }
 		}
-		else{ 
+		else{ 											// when there is only one point
 			ellipse(x, y, 5, 5);
 			prevx = x;
 		    prevy = y;
@@ -79,7 +79,7 @@ function is_simple(line_array){
 				
       }
     }
-		console.log(simple);
+		//console.log(simple);
 		return simple;
 		
 }
@@ -87,7 +87,7 @@ function is_simple(line_array){
 
 //ccw test takes three points a, b, c as input
 function ccw(ax, ay, bx, by, cx, cy){
-	console.log(ax, ay, bx, by, cx, cy);
+	//console.log(ax, ay, bx, by, cx, cy);
 	test = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
 	if(test > 0)
 		return 1; //counter clock-wise

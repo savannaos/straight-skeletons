@@ -141,15 +141,21 @@ class Polygon{
   remove_collapsed(){
 		//Output: polygon that removes the edges that collapsed into points
 		//DOES THIS PIECE EVERYTHING TOGETHER? FIXXX
-		//var new_edges = new Array();
-		var edges = this.edges;
-		for(var i = 0; i < edges.length; i++){
-			if (edges[i].is_point()){
-				console.log("Point found")
-			}
+		var e = new Edge(0,0,0,0);
+	    var new_edges = new Array();
+		//var e = new Edge(0,0,0,0);
+		var i = 0;
+		var edges = this.edges; //list of edges in the polygon
+		console.log(edges[i+1]);
+		for(i; i < edges.length-2; i++){
+			var intersect = e.edge_intersect(new Edge(edges[i].x1, edges[i].y2, edges[i].x2, edges[i].y2),
+											 new Edge(edges[i+1].x1, edges[i+1].y2, edges[i+1].x2, edges[i+1].y2)); //returns the intersection of the two edges or false
+			if(intersect == false)
+				new_edges.push(new Edge(intersect[0],intersect[1],intersect[0],intersect[1])); //edge is actually a point, add to new polygon
+			else
+				new_edges.push(edges[i]);
 		}
-		//var poly = new Polygon(new_edges);
-		//return this;
+		return new Polygon(new_edges);
 	}
 
 	draw_polygon(){
