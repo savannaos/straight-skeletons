@@ -133,14 +133,13 @@ class Polygon{
 				skeleton.push(e);
 			}
 			poly = new_poly;
-			poly.remove_collapsed()
+			poly.stitch();
 		}
 		return skeleton;
 	}
 
-  remove_collapsed(){
+  stitch(){
 		//Output: polygon that removes the edges that collapsed into points
-		//DOES THIS PIECE EVERYTHING TOGETHER? FIXXX
 		//var new_edges = new Array();
 		var edges = this.edges;
 		for(var i = 0; i < edges.length; i++){

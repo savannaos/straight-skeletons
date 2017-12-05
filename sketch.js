@@ -90,5 +90,6 @@ function run_simulation(polygon){
   //calls straight_skeleton and draws out the lines returned
   edges = polygon.straight_skeleton();
   edge_holder = new Polygon(edges);
+  stroke(255);
   edge_holder.draw_polygon();
 }
