@@ -136,6 +136,12 @@ class Polygon{
 		//Output: an array of polygons if a split occured
 	}
 
+	check_points(){
+		for(var i = 0; i < this.edges.length; i++){
+			this.edges[i].is_approx_point();
+		}
+	}
+
 	straight_skeleton(){
 		//Output: an array of edges that make up the polygon's straight skeleton
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
@@ -148,16 +154,27 @@ class Polygon{
 		while(i < 10){
 		  new_poly = poly.shrink();
 			//split = poly.split();
-			console.log(i);
-		  //new_poly.draw_polygon();
+		  new_poly.draw_polygon();
 			for(var j = 0; j< poly.edges.length; j++){ //add edges to straight skeleton
 				var e = new Edge(poly.edges[j].x1, poly.edges[j].y1, new_poly.edges[j].x1, new_poly.edges[j].y1);
 				skeleton.push(e);
 			}
 			poly = new_poly;
 			i++;
+			console.log(i);
+			console.log(poly);
+			poly.check_points();
 			if(poly.intersection) poly = poly.remove_points(); //reduces size of polygon
-			if(poly.edges.length <= 1) return skeleton;
+			console.log(poly);
+			if(poly.edges.length == 2) {
+				if(poly.edges[0].is_approx_equal(poly.edges[1])){
+					poly.edges.pop();
+				}
+			}
+			if(poly.edges.length <= 1){
+				if(poly.edges.length == 1) skeleton.push(poly.edges[0]);
+				return skeleton;
+			}
 		}
 		return skeleton;
 	}

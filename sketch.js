@@ -101,7 +101,7 @@ function run_simulation(polygon){
   edges = polygon.straight_skeleton();
   edge_holder = new Polygon(edges);
   //stroke(255);
-  edge_holder.draw_polygon();
+  //edge_holder.draw_polygon();
 }
 
 function intersect(a1,a2,b1,b2){
@@ -123,4 +123,10 @@ function intersect(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2){
   var x = (b2 - b1) / (m1 - m2);
   var y = m1*x + b1;
   return [x,y];
+}
+
+function approx(a,b){
+  eps = 6;
+  if(abs(a-b)<=eps) return true;
+  else return false;
 }

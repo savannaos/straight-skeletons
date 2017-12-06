@@ -16,10 +16,12 @@ class Edge{
 	set_endpoint1(x1,y1){
 		this.x1 = x1;
 		this.y1 = y1;
+		if(this.x1 == this.x2 && this.y1 && this.y2) this.point = true; //might want to make approx
 	}
 	set_endpoint2(x2,y2){
 		this.x2 = x2;
 		this.y2 = y2;
+		if(this.x1 == this.x2 && this.y1 && this.y2) this.point = true;
 	}
 	set_next(e){
 		this.next = e;
@@ -36,9 +38,17 @@ class Edge{
 		this.x2 = x2;
 		this.y2 = y2;
 	}
-
+  is_approx_equal(e2){
+		var e1 = this;
+		if((approx(e1.x1, e2.x1) && approx(e1.y1, e2.y1) &&
+		    approx(e1.x2, e2.x2) && approx(e1.y2, e2.y2)) ||
+			 (approx(e1.x1, e2.x2) && approx(e1.y1, e2.y2) &&
+	 		  approx(e1.x2, e2.x1) && approx(e1.y2, e2.y1))) {
+					 return true;
+		}
+	}
 	is_approx_point(){ //is the edge closely a point? if so, make it one
-		var eps = 5;
+		var eps = 6;
 		if((abs(this.x1-this.x2) <= eps) && (abs(this.y1-this.y2) <=eps)){
 			this.set_point(true);
 			x = (this.x1 + this.x2)/2;
