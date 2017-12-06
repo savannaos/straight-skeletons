@@ -93,53 +93,37 @@ class Polygon{
 		//Idea: for all vertices, [x,y] = direction()
 		//new vertex =  old + (lambda * [x,y]).
 		var new_edges = new Array();
-		var i,e_curr,e_prev, x_curr, y_curr, x_prev, y_prev,x_start,y_start, cond = false;
+		var i,e_curr,e_prev, x_curr, y_curr, x_next, y_next,cond = false, update_next_point = false;
 		for(i = 0; i < this.edges.length; i++){
 			e_curr = this.edges[i];
-			x_curr = e_curr.x1 + this.bisectors[i][0]; //(d[0] * lambda);				//get x moved along bisector
-			y_curr = e_curr.y1 + this.bisectors[i][1];//(d[1] * lambda);				//get y moved along bisector
-
-			if(i==0){
-				x_start = x_curr;
-				y_start = y_curr;
+			if(update_next_point) { update_next_point = false;}
+			else {
+				x_curr = e_curr.x1 + this.bisectors[i][0]; 				//get x moved along bisector
+				y_curr = e_curr.y1 + this.bisectors[i][1];				//get y moved along bisector
+			}
+			if(i==this.edges.length-1){
+				x_next = new_edges[0].x1;
+				y_next = new_edges[0].y1;
 			}
 			else {
-				//check bisector intersections --------------------
-				var intersection = intersect(e_curr.x1,e_curr.y1, x_curr, y_curr, e_curr.prev.x1,
-					e_curr.prev.y1, x_prev, y_prev);
-				if(intersection){ //bisectors intersect so set endpoints to that point of intersection
-					x_prev = x_curr = intersection[0];
-					y_prev = y_curr = intersection[1];
-					if(i==1) {
-						x_start = x_curr;
-						y_start = y_curr;
-					}
-					if(new_edges.length > 0){ //remedy the previous edge
-						new_edges[new_edges.length-1].set_endpoint2(x_prev,y_prev);
-				 }
-				 cond = true;
-				}
-				var e = new Edge(x_prev, y_prev, x_curr,y_curr);
-				//e.is_approx_point();
-				new_edges.push(e);
+				x_next = e_curr.x2 + this.bisectors[i+1][0];
+				y_next = e_curr.y2 + this.bisectors[i+1][1];
 			}
-			if(i == this.edges.length-1){
-				intersection = intersect(e_curr.x1,e_curr.y1, x_curr, y_curr,
-					this.edges[0].x1, this.edges[0].y1, x_start, y_start);
-				if(intersection){
-					cond = true;
-					x_start = x_curr = intersection[0];
-					y_start = y_curr = intersection[1];
+			//check bisector intersections --------------------
+			var intersection = intersect(e_curr.x1,e_curr.y1, x_curr, y_curr, e_curr.x2,
+			e_curr.y2, x_next, y_next);
+			if(intersection){ //bisectors intersect so set endpoints to that point of intersection
+				cond = true; update_next_point =true;
+				x_next = x_curr = intersection[0];
+				y_next = y_curr = intersection[1];
+				if(new_edges.length > 0){ //remedy the previous edge
+					new_edges[new_edges.length-1].set_endpoint2(x_curr,y_curr);
 				}
-				var e = new Edge(x_curr,y_curr, x_start,y_start);
-				//e.is_approx_point();
-				new_edges.push(e);
 			}
-
-			x_prev = x_curr;
-			y_prev = y_curr;
+			var e = new Edge(x_curr,y_curr,x_next,y_next);
+			new_edges.push(e);
 		}
-	  var p = new Polygon(new_edges);
+		var p = new Polygon(new_edges);
 		p.intersection = cond;
 		return p;
 	}
@@ -161,31 +145,39 @@ class Polygon{
 		var new_poly;
 		var skeleton = new Array();
 		var i = 0;
-		while(i < 5){
+		while(i < 10){
 		  new_poly = poly.shrink();
 			//split = poly.split();
 			console.log(i);
-		  new_poly.draw_polygon();
+		  //new_poly.draw_polygon();
 			for(var j = 0; j< poly.edges.length; j++){ //add edges to straight skeleton
-				var e = new Edge(poly.edges[j].x1,poly.edges[j].y1,new_poly.edges[j].x1,new_poly.edges[j].y1);
+				var e = new Edge(poly.edges[j].x1, poly.edges[j].y1, new_poly.edges[j].x1, new_poly.edges[j].y1);
 				skeleton.push(e);
 			}
 			poly = new_poly;
 			i++;
-			//poly.stitch();
-			//poly.remove_collapsed()
+			if(poly.intersection) poly = poly.remove_points(); //reduces size of polygon
+			if(poly.edges.length <= 1) return skeleton;
 		}
 		return skeleton;
 	}
 
-  stitch(){
+	remove_points(){
+		var new_edges = new Array();
+		for(var i = 0; i < this.edges.length; i++){
+			if (!this.edges[i].is_point()){
+				new_edges.push(this.edges[i]);
+			}
+		}
+		var p = new Polygon(new_edges);
+		return p;
+	}
+
+  remove_collapsed(){
 		//Output: polygon that removes the edges that collapsed into points
 		//var new_edges = new Array();
 		var edges = this.edges;
 		for(var i = 0; i < edges.length; i++){
-			if (edges[i].is_point()){
-				console.log("Point found")
-			}
 		//DOES THIS PIECE EVERYTHING TOGETHER? FIXXX
 		var e = new Edge(0,0,0,0);
 	    var new_edges = new Array();
