@@ -8,9 +8,18 @@ class Edge{
 		this.prev;
 		this.next;
 		this.point = false; //is the edge just a point?
+		if(this.x1 == this.x2 && this.y1 && this.y2) this.point = true;
 	}
 	set_prev(e){
 		this.prev = e;
+	}
+	set_endpoint1(x1,y1){
+		this.x1 = x1;
+		this.y1 = y1;
+	}
+	set_endpoint2(x2,y2){
+		this.x2 = x2;
+		this.y2 = y2;
 	}
 	set_next(e){
 		this.next = e;
@@ -54,5 +63,8 @@ class Edge{
 		return false;
 	}
 
-
+	//returns the intersection between two edges, else returns false.
+	edge_intersect(e1, e2){
+		return intersect(e1.x1,e1.y1,e1.x2,e1.y2,e2.x1,e1.y1,e2.x2,e2.y2);
+	}
 }

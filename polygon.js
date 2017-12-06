@@ -1,6 +1,7 @@
 class Polygon{
 	constructor(e){
 		this.edges = e; //list of edges
+		this.lambda = 20;
 		this.cw = this.clockwise();	// true if the edges are stored in clockwise order
 		var last = this.edges.length -1;
 		for(let i=0; i<this.edges.length; i++){ //sets up halfedge
@@ -9,7 +10,21 @@ class Polygon{
 			if(i==last) this.edges[i].set_next(this.edges[0]);
 			else 		    this.edges[i].set_next(this.edges[i+1]);
 		}
+		this.bisectors = this.compute_bisectors();
+		this.intersection = false;
 }
+  compute_bisectors(){
+		//compute and return the list of bisectors for the vertices in the polygon.
+		var bisectors = new Array();
+		for(var i = 0; i<this.edges.length; i++){
+			var e = this.edges[i];
+			var d = this.direction(e.prev,e);
+			d[0] = d[0] * this.lambda;
+			d[1] = d[1] * this.lambda;
+			bisectors.push(d);
+		}
+		return bisectors;
+	}
 	clockwise() {	// determines if edges are stored in clockwise order
 		var a = 0;
 		for (var i = 0; i < this.edges.length; i++) {
@@ -69,34 +84,55 @@ class Polygon{
 		var x = Math.cos(a);
 		var y = Math.sin(a);
 		var d = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-		return [x/d, y/d];
+		return [x/d * -1, y/d* -1];
 	}
 
-  shrink(lambda){
+  shrink(){
 		//input: a lambda value to shrink in by
 		//output: new set of edges after performing the shrink.
 		//Idea: for all vertices, [x,y] = direction()
 		//new vertex =  old + (lambda * [x,y]).
 		var new_edges = new Array();
-		var i,e_curr,e_prev, x_curr, y_curr, x_prev, y_prev,x_start,y_start;
+		var i,e_curr,e_prev, x_curr, y_curr, x_prev, y_prev,x_start,y_start, cond = false;
 		for(i = 0; i < this.edges.length; i++){
 			e_curr = this.edges[i];
-			var d = this.direction(e_curr.prev,e_curr); //get bisector
-			x_curr = e_curr.x1 - (d[0] * lambda);				//get x moved along bisector
-			y_curr = e_curr.y1 - (d[1] * lambda);				//get y moved along bisector
+			x_curr = e_curr.x1 + this.bisectors[i][0]; //(d[0] * lambda);				//get x moved along bisector
+			y_curr = e_curr.y1 + this.bisectors[i][1];//(d[1] * lambda);				//get y moved along bisector
 
 			if(i==0){
 				x_start = x_curr;
 				y_start = y_curr;
 			}
 			else {
+				//check bisector intersections --------------------
+				var intersection = intersect(e_curr.x1,e_curr.y1, x_curr, y_curr, e_curr.prev.x1,
+					e_curr.prev.y1, x_prev, y_prev);
+				if(intersection){ //bisectors intersect so set endpoints to that point of intersection
+					x_prev = x_curr = intersection[0];
+					y_prev = y_curr = intersection[1];
+					if(i==1) {
+						x_start = x_curr;
+						y_start = y_curr;
+					}
+					if(new_edges.length > 0){ //remedy the previous edge
+						new_edges[new_edges.length-1].set_endpoint2(x_prev,y_prev);
+				 }
+				 cond = true;
+				}
 				var e = new Edge(x_prev, y_prev, x_curr,y_curr);
-				e.is_approx_point();
+				//e.is_approx_point();
 				new_edges.push(e);
 			}
 			if(i == this.edges.length-1){
+				intersection = intersect(e_curr.x1,e_curr.y1, x_curr, y_curr,
+					this.edges[0].x1, this.edges[0].y1, x_start, y_start);
+				if(intersection){
+					cond = true;
+					x_start = x_curr = intersection[0];
+					y_start = y_curr = intersection[1];
+				}
 				var e = new Edge(x_curr,y_curr, x_start,y_start);
-				e.is_approx_point();
+				//e.is_approx_point();
 				new_edges.push(e);
 			}
 
@@ -104,6 +140,7 @@ class Polygon{
 			y_prev = y_curr;
 		}
 	  var p = new Polygon(new_edges);
+		p.intersection = cond;
 		return p;
 	}
 
@@ -120,20 +157,23 @@ class Polygon{
 		//Idea: until stopping condition, iteratively call shrink on a polygon.
 		//At each iteration, add an edge to the skeleton connecting the vertices
 		//of the previous polygon and the new shrunken one.
-		var lambda = 20;
 		var poly = this;
 		var new_poly;
 		var skeleton = new Array();
-		for(var i = 0; i < 5; i ++){
-		  new_poly = poly.shrink(lambda);
+		var i = 0;
+		while(i < 5){
+		  new_poly = poly.shrink();
 			//split = poly.split();
+			console.log(i);
 		  new_poly.draw_polygon();
 			for(var j = 0; j< poly.edges.length; j++){ //add edges to straight skeleton
 				var e = new Edge(poly.edges[j].x1,poly.edges[j].y1,new_poly.edges[j].x1,new_poly.edges[j].y1);
 				skeleton.push(e);
 			}
 			poly = new_poly;
-			poly.stitch();
+			i++;
+			//poly.stitch();
+			//poly.remove_collapsed()
 		}
 		return skeleton;
 	}
@@ -146,10 +186,24 @@ class Polygon{
 			if (edges[i].is_point()){
 				console.log("Point found")
 			}
+		//DOES THIS PIECE EVERYTHING TOGETHER? FIXXX
+		var e = new Edge(0,0,0,0);
+	    var new_edges = new Array();
+		//var e = new Edge(0,0,0,0);
+		var i = 0;
+		var edges = this.edges; //list of edges in the polygon
+		console.log(edges[i+1]);
+		for(i; i < edges.length-2; i++){
+			var intersect = e.edge_intersect(new Edge(edges[i].x1, edges[i].y2, edges[i].x2, edges[i].y2),
+											 new Edge(edges[i+1].x1, edges[i+1].y2, edges[i+1].x2, edges[i+1].y2)); //returns the intersection of the two edges or false
+			if(intersect == false)
+				new_edges.push(new Edge(intersect[0],intersect[1],intersect[0],intersect[1])); //edge is actually a point, add to new polygon
+			else
+				new_edges.push(edges[i]);
 		}
-		//var poly = new Polygon(new_edges);
-		//return this;
+		return new Polygon(new_edges);
 	}
+}
 
 	draw_polygon(){
 		//For visual testing
