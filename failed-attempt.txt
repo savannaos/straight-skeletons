@@ -1,0 +1,363 @@
+		let poly = this;
+		let minX = poly.edges[0].x1;
+		let minY = poly.edges[0].y1;
+		let maxX = minX;
+		let maxY = minY;
+		for (let i = 1; i < poly.edges.length; i++) {
+			let x = poly.edges[i].x1;
+			let y = poly.edges[i].y1;
+			if (x < minX)
+				minX = x;
+			else if (x > maxX)
+				maxX = x;
+			if (y < minY)
+				minY = y;
+			else if (y > maxY)
+				maxY = y;
+		}
+		let temp_skeleton = new Array();
+		for (let i = 0; i < poly.edges.length; i++) {
+			let j = i + 1;
+			if (j == poly.edges.length)
+				j = 0;
+			let e1 = poly.edges[i];
+			let e2 = poly.edges[j];
+			let x = e1.x2;
+			let y = e1.y2;
+			let dir = poly.direction(e1, e2);
+			let dx = dir[0];
+			let dy = dir[1];
+			let fx = x;
+			let fy = y;
+			if (dx > 0) {
+				if (dy > 0)
+					while (fx < maxX || fy < maxY) {
+						fx += dx*this.lambda;
+						fy += dy*this.lambda;
+					}
+				else if (dy == 0)
+					while (fx < maxX)
+						fx += dx*this.lambda;
+				else
+					while (fx < maxX || fy > minY) {
+						fx += dx*this.lambda;
+						fy += dy*this.lambda;
+					}
+			}
+			else if (dx == 0) {
+				if (dy > 0)
+					while (fy < maxY)
+						fy += dy*this.lambda;
+				else if (dy < 0)
+					while (fy > minY)
+						fy += dy*this.lambda;
+			}
+			else {
+				if (dy > 0)
+					while (fx > minX || fy < maxY) {
+						fx += dx*this.lambda;
+						fy += dy*this.lambda;
+					}
+				else if (dy == 0)
+					while (fx > minX)
+						fx += dx*this.lambda;
+				else
+					while (fx > minX || fy > minX) {
+						fx += dx*this.lambda;
+						fy += dy*this.lambda;
+					}
+			}
+			temp_skeleton.push(new Edge(x, y, fx, fy));
+			//line(x, y, fx, fy);	// for debugging
+		}
+		if (poly.edges.length == 3) {
+			let e1 = temp_skeleton[0];
+			let e2 = temp_skeleton[1];
+			let x1 = e1.x1;
+			let y1 = e1.y1;
+			let fx1 = e1.x2;
+			let fy1 = e1.y2;
+			let x2 = e2.x1;
+			let y2 = e2.y1;
+			let fx2 = e2.x2;
+			let fy2 = e2.y2;
+			let pn = (y2 - fy2)*(x1 - x2) + (fx2 - x2)*(y1 - y2);
+			let pd = (fx2 - x2)*(y1 - fy1) - (x1 - fx1)*(fy2 - y2);
+			let p = pn/pd;
+			let px = x1 + p*(fx1 - x1);
+			let py = y1 + p*(fy1 - y1);
+			line(x1, y1, px, py);
+			line(x2, y2, px, py);
+			line(temp_skeleton[2].x1, temp_skeleton[2].y1, px, py);
+		}
+		else {
+			let skeleton = new Array();
+			let incomplete = true;
+			while(incomplete) {
+				let earliest_intersection_with = new Array();
+				let earliest_intersection_at_x = new Array();
+				let earliest_intersection_at_y = new Array();
+				let first_intersection = new Array();
+				for (let i = 0; i < temp_skeleton.length; i++) {
+					earliest_intersection_with.push(temp_skeleton.length);
+					earliest_intersection_at_x.push(maxX + 1);
+					earliest_intersection_at_y.push(maxY + 1);
+					first_intersection.push(true);
+				}
+				for (let i = 0; i < temp_skeleton.length; i++) {
+					let e1 = temp_skeleton[i];
+					let x1 = e1.x1;
+					let y1 = e1.y1;
+					let fx1 = e1.x2;
+					let fy1 = e1.y2;
+					let v1 = ((fx1 - x1) == 0);
+					let m1 = 0;
+					if (!v1)
+						m1 = (fy1 - y1)/(fx1 - x1);
+					for (let j = 0; j < temp_skeleton.length; j++) {
+						if (j != i) {
+							let e2 = temp_skeleton[j];
+							let x2 = e2.x1;
+							let y2 = e2.y1;
+							let fx2 = e2.x2;
+							let fy2 = e2.y2;
+							let v2 = ((fx2 - x2) == 0);
+							let m2 = 0;
+							if (!v2)
+								m2 = (fy2 - y2)/(fx2 - x2);
+							if (v1 && v2) {
+								if (x1 == x2) {
+									skeleton.push(new Edge(x1, y1, x2, y2));
+									if (first_intersection[i]) {
+										earliest_intersection_with[i] = j;
+										earliest_intersection_at_x[i] = x1;
+										earliest_intersection_at_y[i] = y1;
+										first_intersection[i] = false;
+									}
+									else {
+										earliest_intersection_with[i] = j;
+										earliest_intersection_at_x[i] = x1;
+										earliest_intersection_at_y[i] = y1;
+									}
+								}
+							}
+							else if (!(v1 || v2)) {
+								if (m1 != m2) {
+									let d = (fx2 - x2)*(y1 - fy1) - (x1 - fx1)*(fy2 - y2);
+									let pn = (y2 - fy2)*(x1 - x2) + (fx2 - x2)*(y1 - y2);
+									let p = pn/d;
+									let qn = (y1 - fy1)*(x1 - x2) + (fx1 - x1)*(y1 - y2);
+									let q = qn/d;
+									if (p >= 0 && p <= 1 && q >= 0 && q<= 1) {
+										let px = x1 + p*(fx1 - x1);
+										let py = y1 + p*(fy1 - y1);
+										if (first_intersection[i]) {
+											earliest_intersection_with[i] = j;
+											earliest_intersection_at_x[i] = px;
+											earliest_intersection_at_y[i] = py;
+											first_intersection[i] = false;
+										}
+										else {
+											let ox = earliest_intersection_at_x[i];
+											let oy = earliest_intersection_at_y[i];;
+											let dNew = Math.sqrt(Math.pow(px - x1, 2) + Math.pow(py - y1, 2));
+											let dOld = Math.sqrt(Math.pow(ox - x1, 2) + Math.pow(oy - y1, 2));
+											if (dNew < dOld) {
+												earliest_intersection_with[i] = j;
+												earliest_intersection_at_x[i] = px;
+												earliest_intersection_at_y[i] = py;
+											}
+										}
+									}
+								}
+								else {
+									let d = (fx2 - x2)*(y1 - fy1) - (x1 - fx1)*(fy2 - y2);
+									let pn = (y2 - fy2)*(x1 - x2) + (fx2 - x2)*(y1 - y2);
+									let p = pn/d;
+									let qn = (y1 - fy1)*(x1 - x2) + (fx1 - x1)*(y1 - y2);
+									let q = qn/d;
+									if (p >= 0 && p <= 1 && q >= 0 && q<= 1) {
+										skeleton.push(new Edge(x1, y1, x2, y2));
+										if (first_intersection[i]) {
+											earliest_intersection_with[i] = j;
+											earliest_intersection_at_x[i] = x1;
+											earliest_intersection_at_y[i] = y1;
+											first_intersection[i] = false;
+										}
+										else {
+											earliest_intersection_with[i] = j;
+											earliest_intersection_at_x[i] = x1;
+											earliest_intersection_at_y[i] = y1;
+										}
+									}
+								}
+							}
+							else {
+								let d = (fx2 - x2)*(y1 - fy1) - (x1 - fx1)*(fy2 - y2);
+								let pn = (y2 - fy2)*(x1 - x2) + (fx2 - x2)*(y1 - y2);
+								let p = pn/d;
+								let qn = (y1 - fy1)*(x1 - x2) + (fx1 - x1)*(y1 - y2);
+								let q = qn/d;
+								if (p >= 0 && p <= 1 && q >= 0 && q<= 1) {
+									let px = x1 + p*(fx1 - x1);
+									let py = y1 + p*(fy1 - y1);
+									if (first_intersection[i]) {
+										earliest_intersection_with[i] = j;
+										earliest_intersection_at_x[i] = px;
+										earliest_intersection_at_y[i] = py;
+										first_intersection[i] = false;
+									}
+									else {
+										let ox = earliest_intersection_at_x[i];
+										let oy = earliest_intersection_at_y[i];;
+										let dNew = Math.sqrt(Math.pow(px - x1, 2) + Math.pow(py - y1, 2));
+										let dOld = Math.sqrt(Math.pow(ox - x1, 2) + Math.pow(oy - y1, 2));
+										if (dNew < dOld) {
+											earliest_intersection_with[i] = j;
+											earliest_intersection_at_x[i] = px;
+											earliest_intersection_at_y[i] = py;
+										}
+									}
+								}
+							}
+						}
+					}
+					let px = earliest_intersection_at_x[i]; // for debugging
+					let py = earliest_intersection_at_y[i];	// for debugging
+					line (x1, y1, px, py);	// for debugging
+				}
+				incomplete = false;
+				let new_temp = new Array();
+				for (let i = 0; i < temp_skeleton.length; i++) {
+					let j = earliest_intersection_with[i];
+					if (i == earliest_intersection_with[j]) {
+						let px = earliest_intersection_at_x[i];
+						let py = earliest_intersection_at_y[i];
+						let e1o = temp_skeleton[i];
+						let e2o = temp_skeleton[j];
+						let e1 = new Edege(e1o.x1, e1o.y1, px, py);
+						let e2 = new Edge(e2o.x1, e2o.y1, px, py);
+						skeleton.push(e1);
+						skeleton.push(e2);
+						//line(x1, y1, px, py);	// for debugging
+						//line(e2.x1, e2.y1, px, py);	// for debugging
+						let x1 = e1.x1;
+						let y1 = e1.y1;
+						let dx1 = px - x1;
+						let dy1 = py - y1;
+						let v1 = (dx1 == 0);
+						let m1 = 0;
+						if (v1) {
+							if (dy1 > 0)
+								m1 = Math.PI/2;
+							else
+								m1 = 3*Math.PI/2;
+						}
+						else {
+							m1 = Math.atan(Math.abs(dy1/dx1));
+							if (dx1 > 0) {
+								if (dy1 < 0)
+									m1 = 2*Math.PI - m1;
+							}
+							else {
+								if (dy1 >= 0)
+									m1 = Math.PI - m1;
+								else
+									m1 = Math.PI + m1;
+							}
+						}
+						let x2 = e2.x1;
+						let y2 = e2.y1;
+						let dx2 = px - x2;
+						let dy2 = py - y2;
+						let v2 = (dx2 == 0);
+						let m2 = 0;
+						if (v2) {
+							if (dy2 > 0)
+								m2 = Math.PI/2;
+							else
+								m2 = 3*Math.PI/2;
+						}
+						else {
+							m2 = Math.atan(Math.abs(dy1/dx1));
+							if (dx2 > 0) {
+								if (dy2 < 0)
+									m2 = 2*Math.PI - m2;
+							}
+							else {
+								if (dy1 >= 0)
+									m2 = Math.PI - m2;
+								else
+									m2 = Math.PI + m2;
+							}
+						}
+						if (m1 == m2 + Math.PI || m1 == m2 - Math.PI) {
+							skeleton.push(new Edge(x1, y1, x2, y2));
+							//line(x1, y1, x2, y2);	// for debugging
+						}
+						else {
+							let ang = (m1 + m2)/2;
+							let x = Math.cos(ang);
+							let y = Math.sin(ang);
+							let d = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+							let dir = [x/d * -1, y/d * -1];
+							let dx = dir[0];
+							let dy = dir[1];
+							let fx = px;
+							let fy = py;
+							if (dx > 0) {
+								if (dy > 0)
+									while (fx < maxX || fy < maxY) {
+										fx += dx*this.lambda;
+										fy += dy*this.lambda;
+									}
+								else if (dy == 0)
+									while (fx < maxX)
+										fx += dx*this.lambda;
+								else
+									while (fx < maxX || fy > minY) {
+										fx += dx*this.lambda;
+										fy += dy*this.lambda;
+									}
+							}
+							else if (dx == 0) {
+								if (dy > 0)
+									while (fy < maxY)
+										fy += dy*this.lambda;
+								else if (dy < 0)
+									while (fy > minY)
+										fy += dy*this.lambda;
+							}
+							else {
+								if (dy > 0)
+									while (fx > minX || fy < maxY) {
+										fx += dx*this.lambda;
+										fy += dy*this.lambda;
+									}
+								else if (dy == 0)
+									while (fx > minX)
+										fx += dx*this.lambda;
+								else
+									while (fx > minX || fy > minX) {
+										fx += dx*this.lambda;
+										fy += dy*this.lambda;
+									}
+							}
+							if (dx != 0 || dy != 0)
+								new_temp.push(new Edge(px, py, fx, fy));
+						}
+					}
+					else {
+						//incomplete = true;	// comment out when debugging
+						new_temp.push(temp_skeleton[i]);
+					}
+				}
+				temp_skeleton = new Array();
+				for (let i = 0; i < new_temp.length; i++)
+					temp_skeleton.push(new_temp[i]);
+			}
+			for (let i = 0; i < skeleton.length; i++) {
+				let edge = skeleton[i];
+				line(edge.x1, edge.y1, edge.x2, edge.y2);
+			}
+		}

@@ -26,7 +26,41 @@ function setup() {
   hex_but = createButton('Pentagon');
   hex_but.position(90,520);
   hex_but.mouseReleased(draw_pent);
+
+  mountain_but = createButton('Non-convex');
+  mountain_but.position(167,520);
+  mountain_but.mouseReleased(draw_mount);
+
 }
+function draw_mount(){
+	clearLines(); done = true;
+	line(100,100,100,300);
+	line(100,300,500,300);
+	line(500,300,500,100);
+	line(500,100,300,280);
+	line(300,280,100,100);
+	e = [new Edge(114.15,285.86,114.15,132),new Edge(114.15,132,280,285.86),
+	     new Edge(280,285.86,114.15,285.86)];
+	var p1 = new Polygon(e);
+	line(114.15,285.86,114.15,132);
+	line(114.15,132,280,285.86);
+	line(280,285.86,114.15,285.86);
+	run_nonconvex_simulation(p1);
+	line(485.75,285.86,485.75,132);
+	line(485.75,132,320,285.86);
+	line(320,285.86,485.75,285.86);
+	e2 = [new Edge(485.75,285.86,485.75,132), new Edge(485.75,132,320,285.86), new Edge(320,285.86,485.75,285.86)];
+	var p2 = new Polygon(e2);
+	run_nonconvex_simulation(p2);
+	line(100,100,114.15,132);
+	line(100,300,114.15,285.86);
+	line(500,100,485.75,132);
+	line(500,300,485.75,285.86);
+	line(280,285.86,320,285.86);
+	line(300,280,300,285.86);
+
+}
+
 function draw_pent(){
 	clearLines();
   e = [new Edge(94, 168.125, 330, 41.125),
@@ -34,6 +68,9 @@ function draw_pent(){
   new Edge(488, 131.125, 488, 183.125),
   new Edge(488, 183.125, 333, 274.125),
   new Edge(333, 274.125, 94, 168.125)];
+
+	// e = [new Edge(259.86,75.09,126.05,152.18),new Edge(126.05,152.18,184.68,279.22),new Edge(184.68,279.22,332.19,276.77),
+	// 	 new Edge(332.19,276.77,357.28,149.16),new Edge(357.28,149.16,259.86,75.09)];
 	var p = new Polygon(e);
   p.draw_polygon();
 	run_simulation(p);
@@ -46,14 +83,9 @@ function draw_rectangle(){
 	done = true;
 	e = [new Edge(100,100,100,300),new Edge(100,300,400,300),
 	     new Edge(400,300,400,100), new Edge(400,100,100,100)];
-    line(100,100,100,300);
-    line(100,300,400,300);
-    line(400,300,400,100);
-    line(400,100,100,100);
-
-    console.log(e);
-
+  console.log(e);
 	var p = new Polygon(e);
+  p.draw_polygon();
 	run_simulation(p);
 }
 
@@ -81,7 +113,7 @@ function mousePressed(){
 					      line(e.x1,e.y1, e.x2, e.y2);
 						  done = true;
 						  var p = new Polygon(line_array);
-						  run_simulation(p);
+						  run_nonconvex_simulation(p);
 				     	  }
 					 else if(is_simple(line_array)){
 						  ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
@@ -152,10 +184,6 @@ function run_simulation(polygon){
   display = 1;
 }
 
-function intersect(a1,a2,b1,b2){
-  //input is start and end points for line segments a and b.
-  return intersect(a1[0],a1[1],b1[0],b1[1],b2[0],b2[1]);
-}
 function intersect(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2){
   //computes the intersection of two line segments
   var intersection;
@@ -199,4 +227,16 @@ function toggle_disp(){
       }
     }
   }
+}
+
+function run_nonconvex_simulation(polygon){
+  //calls straight_skeleton and draws out the lines returned
+  ret = polygon.nonconvex_straight_skeleton();
+  skeleton = new Polygon(ret.skeleton);
+  skeleton.draw_polygon();
+  all_polygons = ret.polygons;
+  for(var i = 0; i < all_polygons.length; i++){
+    all_polygons[i].draw_polygon();
+  }
+  display = 1;
 }

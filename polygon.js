@@ -128,10 +128,6 @@ class Polygon{
 		return p;
 	}
 
-  split(){
-		//Output: an array of polygons if a split occured
-	}
-
 	check_points(){
 		for(var i = 0; i < this.edges.length; i++){
 			this.edges[i].is_approx_point();
@@ -153,7 +149,6 @@ class Polygon{
 		var i = 0;
 		while(i < 10){
 		  shrunk_poly = poly.shrink();
-			//split = poly.split();
 			polygons.push(shrunk_poly);  //new_poly.draw_polygon();
 			new_poly = shrunk_poly;
 			new_poly.check_points();
@@ -161,27 +156,23 @@ class Polygon{
 			console.log(i);
 			console.log(poly);
 			console.log(new_poly);
-			if(new_poly.edges.length < poly.edges.length){
-				for(var j = 0; j< poly.edges.length; j++){ //add edges to straight skeleton
-					//var e = new Edge(poly.edges[j].x1, poly.edges[j].y1, shrunk_poly.edges[j].x1, shrunk_poly.edges[j].y1);
-					//skeleton.push(e);
-				}
-				for(var j = 0; j< orig_poly.edges.length; j++){ //add edges to straight skeleton
+			if(new_poly.edges.length < poly.edges.length){ // if we got rid of edges,
+				for(var j = 0; j< orig_poly.edges.length; j++){ //add straight skeletons to that polygon
 					var e = new Edge(orig_poly.edges[j].x1, orig_poly.edges[j].y1, shrunk_poly.edges[j].x1, shrunk_poly.edges[j].y1);
 					skeleton.push(e);
 				}
-				orig_poly = new_poly;
+				orig_poly = new_poly; //this is now our orig poly to draw from.
 			}
-			if(new_poly.edges.length == 2) {
+			if(new_poly.edges.length == 2) { //get rid of colinear edges
 				if(new_poly.edges[0].is_approx_equal(new_poly.edges[1])){
 					new_poly.edges.pop();
 				}
 			}
-			if(new_poly.edges.length <= 1){
-				if(new_poly.edges.length == 1) skeleton.push(new_poly.edges[0]); // add last line
+			if(new_poly.edges.length <= 1){ //left with one edge or one point
+				if(new_poly.edges.length == 1) skeleton.push(new_poly.edges[0]); // last line is part of the skeleton
 				else { //converged to a point
 					var point_poly = polygons.pop();
-					for(var i = 0; i < orig_poly.edges.length ; i++){
+					for(var i = 0; i < orig_poly.edges.length ; i++){ //connect to this point
 						skeleton.push(new Edge(orig_poly.edges[i].x1, orig_poly.edges[i].y1,
 								point_poly.edges[0].x1,point_poly.edges[0].y1));
 					}
@@ -208,30 +199,6 @@ class Polygon{
 		return p;
 	}
 
-  remove_collapsed(){
-		//Output: polygon that removes the edges that collapsed into points
-		//var new_edges = new Array();
-		var edges = this.edges;
-		for(var i = 0; i < edges.length; i++){
-		//DOES THIS PIECE EVERYTHING TOGETHER? FIXXX
-		var e = new Edge(0,0,0,0);
-	    var new_edges = new Array();
-		//var e = new Edge(0,0,0,0);
-		var i = 0;
-		var edges = this.edges; //list of edges in the polygon
-		console.log(edges[i+1]);
-		for(i; i < edges.length-2; i++){
-			var intersect = e.edge_intersect(new Edge(edges[i].x1, edges[i].y2, edges[i].x2, edges[i].y2),
-											 new Edge(edges[i+1].x1, edges[i+1].y2, edges[i+1].x2, edges[i+1].y2)); //returns the intersection of the two edges or false
-			if(intersect == false)
-				new_edges.push(new Edge(intersect[0],intersect[1],intersect[0],intersect[1])); //edge is actually a point, add to new polygon
-			else
-				new_edges.push(edges[i]);
-		}
-		return new Polygon(new_edges);
-	}
-}
-
 	draw_polygon(){
 		//For visual testing
 		var i, edge;
@@ -239,6 +206,50 @@ class Polygon{
 			edge = this.edges[i];
 			line(edge.x1, edge.y1, edge.x2, edge.y2);
 		}
+	}
+
+	nonconvex_straight_skeleton(){
+		//Output: an array of edges that make up the polygon's straight skeleton
+		//Idea: until stopping condition, iteratively call shrink on a polygon.
+		//At each iteration, add an edge to the skeleton connecting the vertices
+		//of the previous polygon and the new shrunken one.
+		var poly = this;
+		var new_poly;
+		var skeleton = new Array();
+		var polygons = new Array();
+		polygons.push(poly);
+		for(var i = 0; i < poly.edges.length;i++){ //adds original edges of polygon to skeleton
+			skeleton.push(poly.edges[i]);
+		}
+		var i = 0;
+		while(i < 10){
+		  new_poly = poly.shrink();
+			polygons.push(new_poly);
+			for(var j = 0; j< poly.edges.length; j++){ //add edges from prev poly to new one to straight skeleton
+				var e = new Edge(poly.edges[j].x1, poly.edges[j].y1, new_poly.edges[j].x1, new_poly.edges[j].y1);
+				skeleton.push(e);
+			}
+			poly = new_poly;
+			i++;
+			console.log(i);
+			console.log(poly);
+			poly.check_points();
+			if(poly.intersection) poly = poly.remove_points(); //reduces size of polygon
+			console.log(poly);
+			if(poly.edges.length == 2) {
+				if(poly.edges[0].is_approx_equal(poly.edges[1])){
+					poly.edges.pop();
+				}
+			}
+			if(poly.edges.length <= 1){
+				if(poly.edges.length == 1) skeleton.push(poly.edges[0]);
+				break;
+			}
+		}
+		var obj = new Object();
+		obj.skeleton = skeleton;
+		obj.polygons = polygons;
+		return obj;
 	}
 
 }
