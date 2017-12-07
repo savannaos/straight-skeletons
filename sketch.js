@@ -1,4 +1,5 @@
 function setup() {
+  var all_polygons;
   canvas = createCanvas(600,400);
   canvas.parent('sketch-holder');
   background(171,212,242);
@@ -14,21 +15,31 @@ function setup() {
   rectangle_but = createButton('Rectangle');
   rectangle_but.position(10,520);
   rectangle_but.mouseReleased(draw_rectangle);
+  hex_but = createButton('Hexagon');
+  hex_but.position(90,520);
+  hex_but.mouseReleased(draw_hex);
   
 }
+function draw_hex(){
+	clearLines();
+	line()
+
+}
+// for demo
 function draw_rectangle(){
 	clearLines();
 	e = [new Edge(100,100,100,300),new Edge(100,300,400,300), 
 	     new Edge(400,300,400,100), new Edge(400,100,100,100)];
     line(100,100,100,300);
-    line(400,100,400,300);
+    line(100,300,400,300);
+    line(400,300,400,100);
     line(400,100,100,100);
-    line(400,300,100,300);
+    
     console.log(e);
 	var p = new Polygon(e);
 	run_simulation(p);
-	
 }
+
 
 function clearLines(){
   line_array = [];
@@ -117,7 +128,7 @@ function run_simulation(polygon){
   edges = polygon.straight_skeleton();
   edge_holder = new Polygon(edges);
   //stroke(255);
-  edge_holder.draw_polygon();
+  //edge_holder.draw_polygon();
 }
 
 function intersect(a1,a2,b1,b2){
