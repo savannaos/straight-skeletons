@@ -1,5 +1,7 @@
 function setup() {
   var all_polygons;
+  var skeleton;
+  var display;
   canvas = createCanvas(600,400);
   canvas.parent('sketch-holder');
   background(171,212,242);
@@ -12,13 +14,23 @@ function setup() {
   clear_but = createButton('clear');
   clear_but.position(550,80);
   clear_but.mouseReleased(clearLines);
+
   rectangle_but = createButton('Rectangle');
   rectangle_but.position(10,520);
   rectangle_but.mouseReleased(draw_rectangle);
+
+  hex_but = createButton('Hexagon');
+  hex_but.position(90,520);
+  hex_but.mouseReleased(draw_pent);
+
+  toggle_display_but = createButton('Toggle Display');
+  toggle_display_but.position(400, 80);
+  toggle_display_but.mouseReleased(toggle_disp);
+
   hex_but = createButton('Pentagon');
   hex_but.position(90,520);
   hex_but.mouseReleased(draw_pent);
-  
+
 }
 function draw_pent(){
 	clearLines();
@@ -30,7 +42,7 @@ function draw_pent(){
 	line(184.68,279.22,332.19,276.77);
 	line(332.19,276.77,357.28,149.16);
 	line(357.28,149.16,259.86,75.09);
-	
+
 	e = [new Edge(259.86,75.09,126.05,152.18),new Edge(126.05,152.18,184.68,279.22),new Edge(184.68,279.22,332.19,276.77),
 		 new Edge(332.19,276.77,357.28,149.16),new Edge(357.28,149.16,259.86,75.09)];
 	var p = new Polygon(e);
@@ -40,14 +52,17 @@ function draw_pent(){
 // for demo
 function draw_rectangle(){
 	clearLines();
+	e = [new Edge(100,100,100,300),new Edge(100,300,400,300)];
 	done = true;
-	e = [new Edge(100,100,100,300),new Edge(100,300,400,300), 
+	e = [new Edge(100,100,100,300),new Edge(100,300,400,300),
 	     new Edge(400,300,400,100), new Edge(400,100,100,100)];
     line(100,100,100,300);
     line(100,300,400,300);
     line(400,300,400,100);
     line(400,100,100,100);
-   
+
+    console.log(e);
+
 	var p = new Polygon(e);
 	run_simulation(p);
 }
@@ -137,10 +152,14 @@ function ccw(ax, ay, bx, by, cx, cy){
 
 function run_simulation(polygon){
   //calls straight_skeleton and draws out the lines returned
-  edges = polygon.straight_skeleton();
-  edge_holder = new Polygon(edges);
-  //stroke(255);
-  //edge_holder.draw_polygon();
+  ret = polygon.straight_skeleton();
+  skeleton = new Polygon(ret.skeleton);
+  skeleton.draw_polygon();
+  all_polygons = ret.polygons;
+  for(var i = 0; i < all_polygons.length; i++){
+    all_polygons[i].draw_polygon();
+  }
+  display = 1;
 }
 
 function intersect(a1,a2,b1,b2){
@@ -168,4 +187,26 @@ function approx(a,b){
   eps = 6;
   if(abs(a-b)<=eps) return true;
   else return false;
+}
+
+function toggle_disp(){
+  if(done){
+    if(display == 3){
+      skeleton.draw_polygon();
+      display = 1;
+    }
+    else {
+      clearLines(); done = true;
+      if(display == 1){
+        skeleton.draw_polygon();
+        display = 2;
+      }
+      else {
+        for(var i = 0; i < all_polygons.length; i++){
+          all_polygons[i].draw_polygon();
+        }
+        display = 3;
+      }
+    }
+  }
 }
