@@ -4,11 +4,7 @@
     <title>Straight Skeletons</title>
     <h1> Straight Skeletons </h1>
     <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
-    <style>
-      h1 {text-align: left;}
-      body {padding: 0; margin: 0;}
-      
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="p5/p5.min.js"></script>
     <script src="p5/addons/p5.dom.min.js"></script>
     <script src="p5/addons/p5.sound.min.js"></script>
@@ -17,7 +13,11 @@
     <script src="sketch.js"></script>
   </head>
   <body>
-    <p> Draw a simple polygon here: </p>
-     <div id="sketch-holder">
+    <h3> Given walls of all the same height, how can we construct a polygonal roof such that all faces have the same slope? </h3>
+     <div id="sketch-holder"> </div>
+       <p> The straight skeleton is computed by a shrinking process in which edges move inwards in a direction normal to itself and vertices move along angular bisectors.
+         The shrinking continues until: <br><br/> 1) The polygon's area becomes zero <br><br/>
+2) An edge event occurs when an edge length decreases to 0 or  <br><br/>
+3) A split event occurs when a reflex vertex collides into an edge. </p>
   </body>
 </html>

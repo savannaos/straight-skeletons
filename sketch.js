@@ -12,23 +12,23 @@ function setup() {
   done = false;
   line_array = new Array();
   clear_but = createButton('clear');
-  clear_but.position(550,80);
+  clear_but.position(850,120);
   clear_but.mouseReleased(clearLines);
 
   rectangle_but = createButton('Rectangle');
-  rectangle_but.position(10,520);
+  rectangle_but.position(850,280);
   rectangle_but.mouseReleased(draw_rectangle);
 
   toggle_display_but = createButton('Toggle Display');
-  toggle_display_but.position(400, 80);
+  toggle_display_but.position(850, 200);
   toggle_display_but.mouseReleased(toggle_disp);
 
   hex_but = createButton('Pentagon');
-  hex_but.position(90,520);
+  hex_but.position(850,360);
   hex_but.mouseReleased(draw_pent);
 
   mountain_but = createButton('Non-convex');
-  mountain_but.position(167,520);
+  mountain_but.position(850,440);
   mountain_but.mouseReleased(draw_mount);
 
 }
@@ -45,13 +45,13 @@ function draw_mount(){
 	line(114.15,285.86,114.15,132);
 	line(114.15,132,280,285.86);
 	line(280,285.86,114.15,285.86);
-	run_nonconvex_simulation(p1);
+	run_simulation(p1,false);
 	line(485.75,285.86,485.75,132);
 	line(485.75,132,320,285.86);
 	line(320,285.86,485.75,285.86);
 	e2 = [new Edge(485.75,285.86,485.75,132), new Edge(485.75,132,320,285.86), new Edge(320,285.86,485.75,285.86)];
 	var p2 = new Polygon(e2);
-	run_nonconvex_simulation(p2);
+	run_simulation(p2,false);
 	line(100,100,114.15,132);
 	line(100,300,114.15,285.86);
 	line(500,100,485.75,132);
@@ -73,7 +73,7 @@ function draw_pent(){
 	// 	 new Edge(332.19,276.77,357.28,149.16),new Edge(357.28,149.16,259.86,75.09)];
 	var p = new Polygon(e);
   p.draw_polygon();
-	run_simulation(p);
+	run_simulation(p,true);
 	done = true;
 }
 // for demo
@@ -86,7 +86,7 @@ function draw_rectangle(){
   console.log(e);
 	var p = new Polygon(e);
   p.draw_polygon();
-	run_simulation(p);
+	run_simulation(p,true);
 }
 
 
@@ -103,7 +103,7 @@ function clearLines(){
 function mousePressed(){
   x = mouseX;                                   		//get clicked spot
   y = mouseY;
-  if (x < 600 && y >= 0 && y < 400)
+  //if (x < canvas.position.x && y >= 0 && y < canvas.position.y) {
 	if(done == false){                          	    //polygon is not yet finished
 		if(prevy != 0) {                        		//previous clicked spot exists
 		     var e = new Edge(prevx,prevy,x,y); 		//create edge from those points
@@ -113,7 +113,7 @@ function mousePressed(){
 					      line(e.x1,e.y1, e.x2, e.y2);
 						  done = true;
 						  var p = new Polygon(line_array);
-						  run_nonconvex_simulation(p);
+						  run_simulation(p,false);
 				     	  }
 					 else if(is_simple(line_array)){
 						  ellipse(e.x2, e.y2, 5, 5);          	//draw point at that spot
@@ -132,6 +132,7 @@ function mousePressed(){
 		    prevy = y;
 		}
 	}
+//}
 }
 
 function is_simple(line_array){
@@ -172,9 +173,14 @@ function ccw(ax, ay, bx, by, cx, cy){
 	else return -1; //clockwise
 }
 
-function run_simulation(polygon){
+function run_simulation(polygon, convex){
   //calls straight_skeleton and draws out the lines returned
-  ret = polygon.straight_skeleton();
+  if(convex) {
+    ret = polygon.straight_skeleton();
+  }
+  else{
+    ret = polygon.nonconvex_straight_skeleton();
+  }
   skeleton = new Polygon(ret.skeleton);
   skeleton.draw_polygon();
   all_polygons = ret.polygons;
@@ -227,16 +233,4 @@ function toggle_disp(){
       }
     }
   }
-}
-
-function run_nonconvex_simulation(polygon){
-  //calls straight_skeleton and draws out the lines returned
-  ret = polygon.nonconvex_straight_skeleton();
-  skeleton = new Polygon(ret.skeleton);
-  skeleton.draw_polygon();
-  all_polygons = ret.polygons;
-  for(var i = 0; i < all_polygons.length; i++){
-    all_polygons[i].draw_polygon();
-  }
-  display = 1;
 }
