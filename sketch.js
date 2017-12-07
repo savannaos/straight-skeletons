@@ -32,35 +32,53 @@ function setup() {
   mountain_but = createButton('Non-convex');
   mountain_but.position(850,440);
   mountain_but.mouseReleased(draw_mount);
-
 }
+
 function draw_mount(){
 	clearLines(); done = true;
-	line(100,100,100,300);
-	line(100,300,500,300);
-	line(500,300,500,100);
-	line(500,100,300,280);
-	line(300,280,100,100);
-	e = [new Edge(114.15,285.86,114.15,132),new Edge(114.15,132,280,285.86),
-	     new Edge(280,285.86,114.15,285.86)];
-	var p1 = new Polygon(e);
-	line(114.15,285.86,114.15,132);
-	line(114.15,132,280,285.86);
-	line(280,285.86,114.15,285.86);
-	run_simulation(p1,false);
-	line(485.75,285.86,485.75,132);
-	line(485.75,132,320,285.86);
-	line(320,285.86,485.75,285.86);
-	e2 = [new Edge(485.75,285.86,485.75,132), new Edge(485.75,132,320,285.86), new Edge(320,285.86,485.75,285.86)];
-	var p2 = new Polygon(e2);
-	run_simulation(p2,false);
-	line(100,100,114.15,132);
-	line(100,300,114.15,285.86);
-	line(500,100,485.75,132);
-	line(500,300,485.75,285.86);
-	line(280,285.86,320,285.86);
-	line(300,280,300,285.86);
+  var first_skel, first_polygons;
 
+  e_outer = [new Edge(100,100,100,300), new Edge(100,300,500,300),
+    new Edge(500,300,500,100), new Edge(500,100,300,280), new Edge(300,280, 100,100)];
+  var p_outer = new Polygon(e_outer);
+  p_outer.draw_polygon();
+
+	e1 = [new Edge(114.15,285.86,114.15,132),new Edge(114.15,132,280,285.86),
+	     new Edge(280,285.86,114.15,285.86)];
+	var p1 = new Polygon(e1);
+  p1.draw_polygon();
+	run_simulation(p1,false);
+  first_skel = skeleton;
+  first_polygons = all_polygons;
+
+	e2 = [new Edge(485.75,285.86,485.75,132), new Edge(485.75,132,320,285.86),
+    new Edge(320,285.86,485.75,285.86)];
+	var p2 = new Polygon(e2);
+  p2.draw_polygon();
+	run_simulation(p2,false);
+
+  e3 = [new Edge(100,100,114.15,132), new Edge(100,300,114.15,285.86),
+    new Edge(500,100,485.75,132),  new Edge(500,300,485.75,285.86),
+    new Edge(280,285.86,320,285.86), new Edge(300,280,300,285.86)];
+  var p3 = new Polygon(e3);
+  p3.draw_polygon();
+
+  all_polygons.push(p_outer);
+  for(var i = 0; i < first_polygons.length; i++){
+    all_polygons.push(first_polygons[i]);
+  }
+  for(var i = 0; i < first_skel.edges.length; i++){
+    skeleton.edges.push(first_skel.edges[i]);
+  }
+  for(var i = 0; i< e3.length; i++){
+    skeleton.edges.push(e3[i]);
+  }
+  for(var i = 0; i< e1.length; i++){
+    skeleton.edges.push(e1[i]);
+  }
+  for(var i = 0; i< e_outer.length; i++){
+    skeleton.edges.push(e_outer[i]);
+  }
 }
 
 function draw_pent(){
