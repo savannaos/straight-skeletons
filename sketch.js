@@ -5,6 +5,8 @@ function setup() {
   canvas = createCanvas(600,400);
   canvas.parent('sketch-holder');
   background(171,212,242);
+  canv_bounds = canvas.canvas.getBoundingClientRect();
+  console.log(canv_bounds);
   x = 0;
   y = 0;
   prevx = 0;
@@ -103,7 +105,7 @@ function clearLines(){
 function mousePressed(){
   x = mouseX;                                   		//get clicked spot
   y = mouseY;
-  //if (x < canvas.position.x && y >= 0 && y < canvas.position.y) {
+  if (x >= canv_bounds.left && x <= canv_bounds.right && y >= canv_bounds.top && y <= canv_bounds.bottom) {
 	if(done == false){                          	    //polygon is not yet finished
 		if(prevy != 0) {                        		//previous clicked spot exists
 		     var e = new Edge(prevx,prevy,x,y); 		//create edge from those points
@@ -132,7 +134,7 @@ function mousePressed(){
 		    prevy = y;
 		}
 	}
-//}
+}
 }
 
 function is_simple(line_array){
