@@ -68,7 +68,7 @@
 					}
 			}
 			temp_skeleton.push(new Edge(x, y, fx, fy));
-			//line(x, y, fx, fy);
+			//line(x, y, fx, fy);	// for debugging
 		}
 		if (poly.edges.length == 3) {
 			let e1 = temp_skeleton[0];
