@@ -150,11 +150,17 @@ class Polygon{
 		var poly = this;
 		var new_poly;
 		var skeleton = new Array();
+		var polygons = new Array();
+		polygons.push(poly);
+		for(var i = 0; i < poly.edges.length;i++){
+			skeleton.push(poly.edges[i]);
+		}
 		var i = 0;
 		while(i < 10){
 		  new_poly = poly.shrink();
 			//split = poly.split();
-		  new_poly.draw_polygon();
+			polygons.push(new_poly);
+		  //new_poly.draw_polygon();
 			for(var j = 0; j< poly.edges.length; j++){ //add edges to straight skeleton
 				var e = new Edge(poly.edges[j].x1, poly.edges[j].y1, new_poly.edges[j].x1, new_poly.edges[j].y1);
 				skeleton.push(e);
@@ -173,10 +179,13 @@ class Polygon{
 			}
 			if(poly.edges.length <= 1){
 				if(poly.edges.length == 1) skeleton.push(poly.edges[0]);
-				return skeleton;
+				break;
 			}
 		}
-		return skeleton;
+		var obj = new Object();
+		obj.skeleton = skeleton;
+		obj.polygons = polygons;
+		return obj;
 	}
 
 	remove_points(){
