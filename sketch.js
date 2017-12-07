@@ -19,10 +19,6 @@ function setup() {
   rectangle_but.position(10,520);
   rectangle_but.mouseReleased(draw_rectangle);
 
-  hex_but = createButton('Hexagon');
-  hex_but.position(90,520);
-  hex_but.mouseReleased(draw_pent);
-
   toggle_display_but = createButton('Toggle Display');
   toggle_display_but.position(400, 80);
   toggle_display_but.mouseReleased(toggle_disp);
@@ -30,22 +26,16 @@ function setup() {
   hex_but = createButton('Pentagon');
   hex_but.position(90,520);
   hex_but.mouseReleased(draw_pent);
-
 }
 function draw_pent(){
 	clearLines();
-	//line(200,100,300,100);
-	//line(300,100,350,50 + Math.sqrt(12500));
-	//line(350, 50 + Math.sqrt(12500), 300, 100+ 2*Math.sqrt(12500));
-	line(259.86,75.09,126.05,152.18);
-	line(126.05,152.18,184.68,279.22);
-	line(184.68,279.22,332.19,276.77);
-	line(332.19,276.77,357.28,149.16);
-	line(357.28,149.16,259.86,75.09);
-
-	e = [new Edge(259.86,75.09,126.05,152.18),new Edge(126.05,152.18,184.68,279.22),new Edge(184.68,279.22,332.19,276.77),
-		 new Edge(332.19,276.77,357.28,149.16),new Edge(357.28,149.16,259.86,75.09)];
+  e = [new Edge(94, 168.125, 330, 41.125),
+  new Edge(330, 41.125, 488, 131.125),
+  new Edge(488, 131.125, 488, 183.125),
+  new Edge(488, 183.125, 333, 274.125),
+  new Edge(333, 274.125, 94, 168.125)];
 	var p = new Polygon(e);
+  p.draw_polygon();
 	run_simulation(p);
 	done = true;
 }
