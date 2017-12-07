@@ -6,7 +6,7 @@ body {
   background-color: linen;
 }
 button {
-  background-color: #ac8db8;
+  background-color: black;
   color: white;
   padding: 15px 42px;
   text-align: center;
@@ -16,6 +16,7 @@ button {
   margin: 3px 2px;
   cursor: pointer;
   border: 5px solid black;
+
   }
 
   canvas{

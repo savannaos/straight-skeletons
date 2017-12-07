@@ -105,7 +105,8 @@ function clearLines(){
 function mousePressed(){
   x = mouseX;                                   		//get clicked spot
   y = mouseY;
-  if (x >= canv_bounds.left && x <= canv_bounds.right && y >= canv_bounds.top && y <= canv_bounds.bottom) {
+  console.log(x,y);
+  if (x >= 0 && x <= 600 && y >= 0&& y <= 400) {
 	if(done == false){                          	    //polygon is not yet finished
 		if(prevy != 0) {                        		//previous clicked spot exists
 		     var e = new Edge(prevx,prevy,x,y); 		//create edge from those points
