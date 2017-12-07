@@ -14,23 +14,23 @@ function setup() {
   done = false;
   line_array = new Array();
   clear_but = createButton('clear');
-  clear_but.position(850,120);
+  clear_but.position(850,145);
   clear_but.mouseReleased(clearLines);
 
   rectangle_but = createButton('Rectangle');
-  rectangle_but.position(850,280);
+  rectangle_but.position(850,305);
   rectangle_but.mouseReleased(draw_rectangle);
 
   toggle_display_but = createButton('Toggle Display');
-  toggle_display_but.position(850, 200);
+  toggle_display_but.position(850, 225);
   toggle_display_but.mouseReleased(toggle_disp);
 
   hex_but = createButton('Pentagon');
-  hex_but.position(850,360);
+  hex_but.position(850,385);
   hex_but.mouseReleased(draw_pent);
 
   mountain_but = createButton('Non-convex');
-  mountain_but.position(850,440);
+  mountain_but.position(850,465);
   mountain_but.mouseReleased(draw_mount);
 
 }
@@ -105,7 +105,7 @@ function clearLines(){
 function mousePressed(){
   x = mouseX;                                   		//get clicked spot
   y = mouseY;
-  console.log(x,y);
+  //console.log(x,y);
   if (x >= 0 && x <= 600 && y >= 0&& y <= 400) {
 	if(done == false){                          	    //polygon is not yet finished
 		if(prevy != 0) {                        		//previous clicked spot exists

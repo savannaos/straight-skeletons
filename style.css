@@ -6,7 +6,7 @@ body {
   background-color: linen;
 }
 button {
-  background-color: black;
+  background-color: grey;
   color: white;
   padding: 15px 42px;
   text-align: center;
@@ -15,7 +15,8 @@ button {
   font-size: 16px;
   margin: 3px 2px;
   cursor: pointer;
-  border: 5px solid black;
+  
+  border-radius: 4px;
 
   }
 
